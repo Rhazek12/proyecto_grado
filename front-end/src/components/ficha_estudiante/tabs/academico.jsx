@@ -107,7 +107,7 @@ const Academico = (props) =>{
                                         </Col>
                                     </Row>
                                     <Row className="periodo_asignaciones_contenido">
-                                        {item.map((item, index) => <Desplegable_item_academico key={index} item={item} /> )}
+                                        <Desplegable_item_academico key={index} item={item} />
                                     </Row>
                                 </Col>
                             </Row>) 
