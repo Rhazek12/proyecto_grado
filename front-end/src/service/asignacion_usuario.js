@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const asignacion_usuario = (formData) => {
-    const url_axios = 'http://localhost:8000/asignacion/asignacion_usuario/';
+    const url_axios = 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/';
     axios({
         url:  url_axios,
         method: "POST",

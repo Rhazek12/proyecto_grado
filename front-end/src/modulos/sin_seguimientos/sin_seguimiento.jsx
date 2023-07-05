@@ -26,7 +26,7 @@ const Sin_seguimientos = () =>{
         useEffect(()=>{
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/semestre/"+14+"/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/semestre/"+14+"/",
           method: "GET",
         })
         .then((respuesta)=>{

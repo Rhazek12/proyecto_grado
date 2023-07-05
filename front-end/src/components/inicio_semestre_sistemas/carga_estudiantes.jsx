@@ -16,7 +16,7 @@ import DataTable from 'react-data-table-component';
 const carga_masiva_component = () =>{
 
   // Constante que guarda la dirección url utilizada por el axios
-  const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
+  const url_carga = "https://sistemaasesback.onrender.com/carga_masiva/carga/"
   // Estado que permite guardar la respuesta del axios
   const [state,set_state] = useState({
     option : 'Estudiante',

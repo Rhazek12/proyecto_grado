@@ -13,7 +13,7 @@ const login_component = () =>{
     logged:'',
     temporal:false
   })
-  const url = "http://127.0.0.1:8000/login" 
+  const url = "https://sistemaasesback.onrender.com/login" 
   const data = {
     'username' : state.usuario[0],
     'password' : state.contrasena[0]

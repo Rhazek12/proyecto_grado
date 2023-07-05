@@ -15,7 +15,7 @@ const Desplegable_item = ({item}) => {
       })
     const traer_reportes = (e) => {
 
-        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+e+"/";
+        const url_axios = "https://sistemaasesback.onrender.com/seguimiento/seguimientos_estudiante/"+e+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,

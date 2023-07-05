@@ -23,7 +23,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/usuario_rol/profesional/')
+    axios.get('https://sistemaasesback.onrender.com/usuario_rol/profesional/')
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -34,7 +34,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/practicante/')
+    axios.get('https://sistemaasesback.onrender.com/usuario_rol/practicante/')
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -45,7 +45,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/')
+    axios.get('https://sistemaasesback.onrender.com/usuario_rol/monitor/')
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -57,7 +57,7 @@ const Carga_masiva = () => {
       });
 
 
-      axios.get('http://localhost:8000/usuario_rol/estudiante_selected/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/estudiante_selected/')
       .then(response => {
         set_state(prevState => ({
           ...prevState,

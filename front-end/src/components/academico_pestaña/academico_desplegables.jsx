@@ -51,7 +51,7 @@ const Academico_desplegable = () =>{
     useEffect(()=>{
         // axios({
         //   // Endpoint to send files
-        //   url:  "http://localhost:8000/academico/lista_de_facultades/",
+        //   url:  "https://sistemaasesback.onrender.com/academico/lista_de_facultades/",
         //   method: "GET",
         // })
         // .then((respuesta)=>{
@@ -70,7 +70,7 @@ const Academico_desplegable = () =>{
 
       const traer_facultades = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/",);
+          const response = await axios.get("https://sistemaasesback.onrender.com/academico/lista_de_facultades/",);
           set_state({
             facultades : response.data,
             tiene_facultades: true
@@ -86,7 +86,7 @@ const Academico_desplegable = () =>{
 
       const traer_estudiantes = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/",);
+          const response = await axios.get("https://sistemaasesback.onrender.com/usuario_rol/estudiante/",);
           set_state({
             estudiantes_a_consultar : [{'estudiantes' : response.data}],
             tiene_estudiantes: true

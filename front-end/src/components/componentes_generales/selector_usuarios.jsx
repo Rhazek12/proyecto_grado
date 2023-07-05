@@ -152,7 +152,7 @@ const selector_usuarios = () =>{
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  "http://localhost:8000/usuario_rol/usuario_rol/"+e.id+"/",
+      url:  "https://sistemaasesback.onrender.com/usuario_rol/usuario_rol/"+e.id+"/",
       method: "GET",
       data: formData,
     })
@@ -247,7 +247,7 @@ const selector_usuarios = () =>{
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
+        url:  "https://sistemaasesback.onrender.com/usuario_rol/usuario_rol/"+id_user+"/",
         method: "PUT",
         data: formData,
       })

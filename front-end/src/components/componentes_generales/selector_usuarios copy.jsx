@@ -30,7 +30,7 @@
 //   useEffect(()=>{
 //     axios({
 //       // Endpoint to send files
-//       url:  "http://127.0.0.1:8000/usuario_rol/alluser/",
+//       url:  "https://sistemaasesback.onrender.com/usuario_rol/alluser/",
 //       method: "GET",
 //     })
 //     .then((respuesta)=>{
@@ -50,7 +50,7 @@
 //       bandera = false
 //       axios({
 //         // Endpoint to send files
-//         url:  "http://127.0.0.1:8000/usuario_rol/allrol/",
+//         url:  "https://sistemaasesback.onrender.com/usuario_rol/allrol/",
 //         method: "GET",
 //       })
 //       .then((respuesta)=>{

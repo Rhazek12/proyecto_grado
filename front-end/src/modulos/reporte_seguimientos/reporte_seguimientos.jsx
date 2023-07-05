@@ -24,7 +24,7 @@ const Reporte_seguimientos = (props) =>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/profesional/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/profesional/",
           method: "GET",
         })
         .then((respuesta)=>{

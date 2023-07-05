@@ -114,7 +114,7 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        const response = await axios.get("https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
         state.total_datos_estudiantes.push(response.data)
         console.log("entra aqui ssisisisiisj")
       }
@@ -143,7 +143,7 @@ const Info_basica = (props) =>{
           if (url == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
             
-            const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
+            const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+dato.value+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -174,7 +174,7 @@ const Info_basica = (props) =>{
     const handle_option_user = (e) => {
       // Getting the files from the input
 
-      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+e.value+"/";
+      const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+e.value+"/";
       axios({
         // Endpoint to send files
         url:  url_axios,

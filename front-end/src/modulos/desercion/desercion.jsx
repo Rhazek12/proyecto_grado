@@ -32,7 +32,7 @@ const Desercion = () =>{
 
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/cohorte_estudiante_info/"+state.id_cohorte+"/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/cohorte_estudiante_info/"+state.id_cohorte+"/",
           method: "GET",
         })
         .then((respuesta)=>{

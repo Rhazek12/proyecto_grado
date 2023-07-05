@@ -16,7 +16,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
+      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_estudiante/',
       method: "POST",
       data: formData,
         })
@@ -40,7 +40,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
       method: "POST",
       data: formData,
         })
@@ -64,7 +64,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
       method: "POST",
       data: formData,
         })

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const all_estudiantes = async () => {
     try {
-        const url_axios = 'http://localhost:8000/usuario_rol/estudiante_selected/';
+        const url_axios = 'https://sistemaasesback.onrender.com/usuario_rol/estudiante_selected/';
         const res = await axios.get(url_axios 
         //     {
         //         headers: {

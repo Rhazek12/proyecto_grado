@@ -40,7 +40,7 @@ useEffect(()=>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/wizard/semestre/",
+          url:  "https://sistemaasesback.onrender.com/wizard/semestre/",
           method: "GET",
         })
         .then((respuesta)=>{

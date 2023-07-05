@@ -93,7 +93,7 @@ const Info_general = (props) =>{
       formData.append('last_name', state.nuevo_apellidos);
         
         axios({
-        url: 'http://localhost:8000/usuario_rol/user_actualizacion/'+props.datos.id+'/',
+        url: 'https://sistemaasesback.onrender.com/usuario_rol/user_actualizacion/'+props.datos.id+'/',
         method: "PUT", // O "PATCH"
         data: formData,
         })

@@ -161,7 +161,7 @@ const inicio_semestre_component = () =>{
         //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
         var nombre_nuevo = '';
         var fecha = '';
-        await fetch('http://localhost:8000/wizard/semestre/' + (e.id).toString() +"/")
+        await fetch('https://sistemaasesback.onrender.com/wizard/semestre/' + (e.id).toString() +"/")
         .then((res) => res.json())
         .then((res)=>{
             nombre_nuevo = res['nombre']

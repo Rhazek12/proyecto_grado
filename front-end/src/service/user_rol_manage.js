@@ -3,7 +3,7 @@ import axios from 'axios';
 const user_rol_manage = async(formData,pk) => {
     try {
         // FALTA ORGANIZAR EL PK
-    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/'+ pk.toString()+"/";
+    const url_axios = 'https://sistemaasesback.onrender.com/usuario_rol/usuario_rol/'+ pk.toString()+"/";
     await axios({
         url:  url_axios,
         method: "GET",

@@ -49,7 +49,7 @@ const Info_basica_monitor = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/monitor/",
+        url:  "https://sistemaasesback.onrender.com/usuario_rol/monitor/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -66,7 +66,7 @@ const Info_basica_monitor = (props) =>{
                       id:[i] }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/monitor/"+state.data_user[i]['id']+"/";
+          const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/monitor/"+state.data_user[i]['id']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -311,7 +311,7 @@ const Info_basica_monitor = (props) =>{
                                                     <h4 className="texto_mas_pequeño">correo</h4>
                                                   </Col>
 
-                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" xs={"5"} md={"2"}>
+                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" md={"2"}>
                                                 <h4 className="texto_mas_pequeño"> cedula</h4>
                                                 </Col>
                                                 

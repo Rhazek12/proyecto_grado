@@ -115,7 +115,7 @@ const Cabecera = (props) =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/wizard/semestre/",
+        url:  "https://sistemaasesback.onrender.com/wizard/semestre/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -134,7 +134,7 @@ const Cabecera = (props) =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+41+"/",
+        url:  "https://sistemaasesback.onrender.com/usuario_rol/reporte_seguimientos/"+41+"/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -168,7 +168,7 @@ const Cabecera = (props) =>{
           id:i }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/profesional/"+state.data_user[i]['id_rol']+"/";
+          const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/profesional/"+state.data_user[i]['id_rol']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -198,7 +198,7 @@ const Cabecera = (props) =>{
           id:i }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/profesional/"+props.data_user[i]['id_rol']+"/";
+          const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/profesional/"+props.data_user[i]['id_rol']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -230,7 +230,7 @@ const Cabecera = (props) =>{
       })
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+props.data_user[e.id]['id']+"/",
+        url:  "https://sistemaasesback.onrender.com/usuario_rol/reporte_seguimientos/"+props.data_user[e.id]['id']+"/",
         method: "GET",
       })
       .then((respuesta)=>{

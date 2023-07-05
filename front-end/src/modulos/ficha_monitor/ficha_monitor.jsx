@@ -26,7 +26,7 @@ const Ficha_monitor = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  "http://localhost:8000/usuario_rol/monitor/",
+            url:  "https://sistemaasesback.onrender.com/usuario_rol/monitor/",
             method: "GET",
           })
           .then((respuesta)=>{

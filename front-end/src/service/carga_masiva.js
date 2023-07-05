@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url_carga = "http://127.0.0.1:8000/carga_masiva"
+const url_carga = "https://sistemaasesback.onrender.com/carga_masiva"
 
 const carga_masiva = (file,option) => {
     let formData = new FormData();

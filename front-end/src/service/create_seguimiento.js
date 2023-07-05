@@ -3,7 +3,7 @@ import axios from 'axios';
 const create_seguimiento = async (formData) => {
     var respuesta = false;
     try {
-        const url_axios = 'http://localhost:8000/seguimiento/seguimiento_individual/';
+        const url_axios = 'https://sistemaasesback.onrender.com/seguimiento/seguimiento_individual/';
 
         const seguimiento = {
             "fecha": formData.fecha,

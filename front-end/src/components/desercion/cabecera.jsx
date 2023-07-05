@@ -28,7 +28,7 @@ const Cabecera = (props) =>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/cohortes_lista/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/cohortes_lista/",
           method: "GET",
         })
         .then((respuesta)=>{

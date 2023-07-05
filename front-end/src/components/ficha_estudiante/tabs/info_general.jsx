@@ -97,7 +97,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Etico = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/grupos_etnicos/')
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -118,7 +118,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Actividad_simultanea = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/actividad_simultanea/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/actividad_simultanea/')
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -139,7 +139,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_identidad_de_genero = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/identidad_gen/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/identidad_gen/')
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -160,7 +160,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_estado_civil = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/estado_civil/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/estado_civil/')
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -181,7 +181,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_condicion_de_excepcion = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/condicion_de_excepcion/')
+      axios.get('https://sistemaasesback.onrender.com/usuario_rol/condicion_de_excepcion/')
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -310,7 +310,7 @@ const Info_general = (props) =>{
       
 
       axios({
-      url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
+      url: 'https://sistemaasesback.onrender.com/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
       method: "POST",
       data: formData,
       })

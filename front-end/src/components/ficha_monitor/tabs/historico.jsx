@@ -45,7 +45,7 @@ const Academico = (props) =>{
 
     useEffect(() => {
         
-        const url_axios = "http://localhost:8000/usuario_rol/historial_monitor/"+props.id+"/";
+        const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/historial_monitor/"+props.id+"/";
         axios({
         // Endpoint to send files
         url:  url_axios,

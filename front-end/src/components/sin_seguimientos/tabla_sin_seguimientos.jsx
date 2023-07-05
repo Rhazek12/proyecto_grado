@@ -19,7 +19,7 @@ const Tabla_sin_Seguimientos = (props) =>{
     
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/"+state.id_semestre+"/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/info_estudiantes_sin_seguimientos/"+state.id_semestre+"/",
           method: "GET",
         })
         .then((respuesta)=>{

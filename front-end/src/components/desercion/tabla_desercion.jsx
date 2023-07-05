@@ -30,7 +30,7 @@ const Tabla_desercion = () => {
 
   useEffect(() => {
     axios({
-      url: `http://localhost:8000/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
+      url: `https://sistemaasesback.onrender.com/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
       method: 'GET',
     })
       .then((respuesta) => {

@@ -20,7 +20,7 @@ const Ficha_estudiante = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  "http://localhost:8000/usuario_rol/estudiante/",
+            url:  "https://sistemaasesback.onrender.com/usuario_rol/estudiante/",
             method: "GET",
           })
           .then((respuesta)=>{

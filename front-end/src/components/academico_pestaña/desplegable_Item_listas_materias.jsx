@@ -17,7 +17,7 @@ const Desplegable_item_listas_materias = ({item}) => {
     
       const traer_cursos_de_facultad = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/cursos_facultad/" + index + "/");
+          const response = await axios.get("https://sistemaasesback.onrender.com/academico/cursos_facultad/" + index + "/");
           set_state({
             cursos_de_la_facultad : response.data
           })
@@ -31,7 +31,7 @@ const Desplegable_item_listas_materias = ({item}) => {
 
       const franjas_del_curso = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/franja_curso/" + index + "/");
+          const response = await axios.get("https://sistemaasesback.onrender.com/academico/franja_curso/" + index + "/");
           set_state({
             franjas_de_curso : response.data
           })
@@ -44,7 +44,7 @@ const Desplegable_item_listas_materias = ({item}) => {
 
       const profesores_de_la_franja = async (index, index2)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/profesores_del_curso/",
+          const response = await axios.get("https://sistemaasesback.onrender.com/academico/profesores_del_curso/",
                                     {params : {curso : index, franja : index2}});
           set_state({
             profesores_de_la_franja : response.data
@@ -58,7 +58,7 @@ const Desplegable_item_listas_materias = ({item}) => {
 
       const alumnos_del_profesor = async (index, index2)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/", 
+          const response = await axios.get("https://sistemaasesback.onrender.com/academico/alumnos_del_profesor/", 
                                                         {params : {curso : index, profesor : index2}});
           set_state({
             alumnos_del_profesor : response.data

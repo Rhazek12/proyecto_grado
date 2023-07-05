@@ -27,7 +27,7 @@ const Info_registros = (props) =>{
       useEffect(()=>{
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/ultimo_seguimiento_individual/" + props.id_estudiante + "/",
+          url:  "https://sistemaasesback.onrender.com/usuario_rol/ultimo_seguimiento_individual/" + props.id_estudiante + "/",
           method: "GET",
         })
         .then((respuesta)=>{

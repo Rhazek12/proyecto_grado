@@ -9,7 +9,7 @@ const Listas = (props) => {
     const{childClicked, childClicked2} = props
     
     const quitar_estudiante = (e) =>{
-      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
+      axios.get('https://sistemaasesback.onrender.com/asignacion/asignacion_estudiante/'+props.item.id+'/')
       .then(response => {
         childClicked2(props.monitor_seleccionado)
         alert("estudiante "+props.item.id+" eliminado correctamente")
@@ -27,7 +27,7 @@ const Listas = (props) => {
 
       axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
       method: "POST",
       data: formData,
         })
@@ -50,7 +50,7 @@ const Listas = (props) => {
 
       axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
       method: "POST",
       data: formData,
         })

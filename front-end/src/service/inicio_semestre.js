@@ -3,8 +3,8 @@ import axios from 'axios';
 const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
 
   //URL para el axios
-  const url_post = 'http://localhost:8000/wizard/semestre/';
-  const url_semestre = 'http://localhost:8000/wizard/semestre/' + instancia.toString()+"/";
+  const url_post = 'https://sistemaasesback.onrender.com/wizard/semestre/';
+  const url_semestre = 'https://sistemaasesback.onrender.com/wizard/semestre/' + instancia.toString()+"/";
 
   //variables para la creacion y finalizacion del semestre
   var semestreActual = {
