@@ -30,6 +30,7 @@ urlpatterns = [
     path('seguimiento/', include('modulo_seguimiento.routers')),
     path('asignacion/', include('modulo_asignacion.routers')),
     path('academico/', include('modulo_academico.routers')),
+    path('campus_diverso/', include('modulo_campus_diverso.routers')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

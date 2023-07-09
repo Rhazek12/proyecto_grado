@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'modulo_seguimiento',
     'modulo_programa',
     'modulo_academico',
+    'modulo_campus_diverso',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
