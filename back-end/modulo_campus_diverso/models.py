@@ -26,7 +26,7 @@ class PertenenciaGrupoPoblacional(models.Model):
     Esta clase es una tabla diccionario del modelo Persona
     """
     id_grupo_poblacional = models.AutoField(primary_key=True)
-    nombre_grupo_poblacional = models.CharField(max_length=300) 
+    nombre_grupo_poblacional = models.CharField(max_length=300, unique=True) 
 
     class Meta:
         db_table = "campus_diverso_pertenencia_grupo_poblacional"
@@ -79,7 +79,7 @@ class RespuestaCambioDocumento(models.Model):
     Esta clase es una tabla diccionario del modelo DiversidadSexual
     """
     id_respuesta_cambio_documento = models.AutoField(primary_key=True)
-    nombre_respuesta_cambio_documento = models.TextField()
+    nombre_respuesta_cambio_documento = models.TextField(unique=True)
     
     def __str__(self):
         return f"{self.nombre_respuesta_cambio_documento}"
@@ -92,7 +92,7 @@ class OrientacionSexual(models.Model):
     Esta clase es una tabla diccionario del modelo DiversidadSexual
     """
     id_orientacion_sexual = models.AutoField(primary_key=True)
-    nombre_orientacion_sexual = models.CharField(max_length=200)
+    nombre_orientacion_sexual = models.CharField(max_length=200, unique=True)
     
     def __str__(self):
         return f"{self.nombre_orientacion_sexual}"
@@ -105,7 +105,7 @@ class ExpresionGenero(models.Model):
     Esta clase es una tabla diccionario del modelo DiversidadSexual
     """
     id_expresion_genero = models.AutoField(primary_key=True)
-    nombre_expresion_genero = models.CharField(max_length=200)
+    nombre_expresion_genero = models.CharField(max_length=200, unique=True)
     
     def __str__(self):
         return f"{self.nombre_expresion_genero}"
@@ -118,7 +118,7 @@ class IdentidadGenero(models.Model):
     Esta clase es una tabla diccionario del modelo DiversidadSexual
     """
     id_identidad_genero = models.AutoField(primary_key=True)
-    nombre_identidad_genero = models.CharField(max_length=200)
+    nombre_identidad_genero = models.CharField(max_length=200, unique=True)
     
     def __str__(self):
         return f"{self.nombre_identidad_genero}"
@@ -131,7 +131,7 @@ class Pronombre(models.Model):
     Esta clase es una tabla diccionario del modelo DiversidadSexual
     """
     id_pronombre = models.AutoField(primary_key=True)
-    nombre_pronombre = models.CharField(max_length=50)
+    nombre_pronombre = models.CharField(max_length=50, unique=True)
     
     def __str__(self):
         return f"{self.nombre_pronombre}"
@@ -165,7 +165,7 @@ class OcupacionActual(models.Model):
     Esta clase es una tabla diccionario del modelo InformacionGeneral
     """
     id_ocupacion_actual = models.AutoField(primary_key=True)
-    nombre_ocupacion_actual = models.CharField(max_length=200)
+    nombre_ocupacion_actual = models.CharField(max_length=200, unique=True)
     
     class Meta:
         db_table = "campus_diverso_ocupacion_actual"
@@ -291,7 +291,7 @@ class Estamento(models.Model):
     Esta clase es una tabla diccionario del modelo InformacionAcademica
     """
     id_estamento = models.AutoField(primary_key=True)
-    nombre_estamento = models.CharField(max_length=100)
+    nombre_estamento = models.CharField(max_length=100, unique=True)
     
     class Meta:
         db_table = "campus_diverso_estamento"
