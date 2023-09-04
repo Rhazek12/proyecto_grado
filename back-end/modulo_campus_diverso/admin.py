@@ -35,7 +35,8 @@ admin.site.register(RedApoyo)
 admin.site.register(FactorRiesgo)
 admin.site.register(EncuentroDiaHora)
 admin.site.register(InformacionGeneral)
-
+admin.site.register(InformacionProfesional)
+admin.site.register(AcompañamientoRecibido)
 
 # ====================== Módulo Información Académica ====================== # 
 admin.site.register(Estamento)

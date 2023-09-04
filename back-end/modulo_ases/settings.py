@@ -120,9 +120,9 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ases',
+        'NAME': 'postgres',
         'USER' : 'postgres',
-        'PASSWORD' : 'postgres',
+        'PASSWORD' : 'robert',
         'HOST' : '127.0.0.1',
         'DATABASE_PORT' : '5432',
     }

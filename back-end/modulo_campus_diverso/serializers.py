@@ -227,6 +227,15 @@ class EncuentroDiaHoraSerializer(serializers.ModelSerializer):
         model = EncuentroDiaHora
         fields = "__all__"
 
+class InformacionProfesionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InformacionProfesional
+        fields = "__all__"
+
+class AcompañamientoRecibidoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcompañamientoRecibido
+        fields = "__all__"    
 #! Se utilizó esta clase para que excluya el campo id_informacion_general al momento de realizar la petición HTTP
 class EncuentroDiaHoraGetSerializer(serializers.ModelSerializer): 
     class Meta:
@@ -281,6 +290,8 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
     redes_de_apoyo = RedApoyoSerializer(many=True)
     factores_de_riesgo = FactorRiesgoSerializer(many=True)
     encuentro_dias_horas = EncuentroDiaHoraGetSerializer(many=True)
+    informacion_profesional = InformacionProfesionalSerializer(many=True)
+    acompañamiento_recibido = AcompañamientoRecibidoSerializer(many=True)
     
     class Meta:
         model = InformacionGeneral
@@ -296,7 +307,8 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
         redes_de_apoyo = validated_data.pop('redes_de_apoyo',[])
         factores_de_riesgo = validated_data.pop('factores_de_riesgo',[])
         encuentro_dias_horas = validated_data.pop('encuentro_dias_horas',[])
-        
+        informacion_profesional = validated_data.pop('informacion_profesional', [])
+        acompañamiento_recibido = validated_data.pop('acompañamiento_recibido', [])
         persona = Persona.objects.get(numero_documento=id_persona)
         
         informacion_general = InformacionGeneral.objects.create(id_persona=persona, **validated_data)
@@ -335,7 +347,12 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
             if not encuentro_dia_hora:
                 encuentro_dia_hora = EncuentroDiaHora.objects.create(**encuentro_dia_hora_data)
             informacion_general.encuentro_dias_horas.add(encuentro_dia_hora)
-         
+
+        for informacion_profesional_data in informacion_profesional:
+             InformacionProfesional.objects.create(id_informacion_general=informacion_general, **informacion_profesional_data)
+        for acompañamiento_recibido_data in acompañamiento_recibido:
+             AcompañamientoRecibido.objects.create(id_informacion_general=informacion_general, **acompañamiento_recibido_data)
+             
         return informacion_general
 
 

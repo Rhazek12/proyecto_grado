@@ -223,7 +223,29 @@ class ocupacion_actual_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = OcupacionActualSerializer.Meta.model.objects.all()
     
-        
+class acompañamiento_recibido_viewsets  (viewsets.ModelViewSet):
+    serializers_class = AcompañamientoRecibidoSerializer
+    queryset = AcompañamientoRecibidoSerializer.Meta.model.objects.all()
+
+    def update(self, request, pk=None, *args, **kwargs):
+        actividad_tiempo_libre = get_object_or_404(AcompañamientoRecibido, id_actividad_tiempo_libre=pk)
+        serializer = self.get_serializer(acompañamiento_recibido, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors)    
+
+class informacion_profesional_viewsets (viewsets.ModelViewSet):
+    serializers_class = InformacionProfesionalSerializer
+    queryset = InformacionProfesionalSerializer.Meta.model.objects.all()
+    def update(self, request, pk=None, *args, **kwargs):
+        actividad_tiempo_libre = get_object_or_404(InformacionProfesional, id_actividad_tiempo_libre=pk)
+        serializer = self.get_serializer(informacion_profesional, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors)     
+
 class informacion_general_viewsets (viewsets.ModelViewSet):
     serializer_class = InformacionGeneralSerializer
     # permission_classes = (IsAuthenticated,)

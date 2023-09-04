@@ -173,7 +173,18 @@ class OcupacionActual(models.Model):
     def __str__(self):
         return f"OcupacionActual: {self.nombre_ocupacion_actual}"
     
+class InformacionProfesional(models.Model):
+    id_profesional_que_brindo_atencion = models.AutoField(primary_key=True)
+
+    nombre_profesional_que_brindo_atencion = models. CharField(max_length=100)
+    id_informacion_general = models.ForeignKey('InformacionGeneral', on_delete=models.CASCADE, related_name='nombre_profesional_que_brindo_atencion', blank=True, default='')
+    class Meta:
+        db_table = "campus_diverso_informacion_profesional"
+
+    def __str__(self):
+        return f"InformacionProfesional: {self.id_informacion_general}" + f"ProfesionalqueAtendio {self.nombre_profesional_que_brindo_atencion}"
     
+
 class ActividadTiempoLibre(models.Model):
     id_actividad_tiempo_libre = models.AutoField(primary_key=True)
     nombre_actividad_tiempo_libre = models.CharField(max_length=200)
@@ -250,25 +261,43 @@ class EncuentroDiaHora(models.Model):
     def __str__(self):
         return f"EncuentroDiaHora {self.id_encuentro_dia_hora}" + f" dia: {self.dia}," + f" hora: {self.hora},"  + f" Informacion General: {self.id_informacion_general}" 
  
+class AcompañamientoRecibido(models.Model):
+    id_ocupacion_actual = models.AutoField(primary_key=True) 
+    nombre_acompañamiento_recibido = models.CharField(max_length=200)
+    observacion_acompanamiento_recibido = models.TextField(blank=True, default="Sin observaciones")
+
+    class Meta:
+        db_table = "campus_diverso_acompañamiento_recibido"
+
+    def __str__(self):
+        return f"Acompañamiento recibido {self.id_ocupacion_actual}" + f"nombre: {self.nombre_acompañamiento_recibido}" + f"Observacion de acompañamiento {self.observacion_acompanamiento_recibido}"
+
+
+
+
+
 class InformacionGeneral(models.Model):
     id_informacion_general = models.AutoField(primary_key=True)
     id_persona = models.OneToOneField(Persona, on_delete=models.CASCADE, null=False, blank=False, related_name="informacion_general")
     dedicacion_externa = models.CharField(max_length=100)
-    tipo_acompanamiento_recibido = models.CharField(max_length=70)
-    observacion_tipo_acompanamiento_recibido = models.TextField()
+    tiene_eps = models.CharField(max_length=20, default="Desconocido")
+    nombre_eps = models.CharField(max_length=200,default="Sin observacion" )
+    regimen_eps = models.CharField(max_length=50, default="Sin regimen")
+    #tipo_acompanamiento_recibido = models.CharField(max_length=70)
+    #observacion_tipo_acompanamiento_recibido = models.TextField()
     tipo_entidad_acompanamiento_recibido = models.TextField()
-    tipo_profesional_acompanamiento_recibido = models.TextField()
+    #tipo_profesional_acompanamiento_recibido = models.TextField()
     calificacion_acompanamiento_recibido = models.IntegerField(null=True)
     motivo_calificacion_acompanamiento = models.TextField(null=True)
     actividades_especificas_tiempo_libre = models.TextField()
     observacion_general_actividades_especificas_tiempo_libre = models.TextField()
     observacion_general_fuente_de_ingresos = models.TextField()
-    observacion_general_relacion_familiar = models.TextField()
+    calificacion_relacion_familiar = models.IntegerField(null=True)
     relacion_familiar = models.IntegerField()
     observacion_general_redes_de_apoyo = models.TextField()
     observacion_general_factores_de_riesgo = models.TextField()
     creencia_religiosa = models.TextField()
-    encuentro_inicial = models.CharField(max_length=30)
+    decision_encuentro_inicial_con_profesional = models.CharField(max_length=30)
     observacion_horario = models.TextField(blank=False, default="Sin observación")
     origen_descubrimiento_campus_diverso = models.CharField(max_length=300)
     comentarios_o_sugerencias_de_usuario = models.TextField()

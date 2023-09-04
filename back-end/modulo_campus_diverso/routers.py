@@ -40,8 +40,8 @@ router.register(r'convivencia-vivienda', convivencia_vivienda_viewsets,basename=
 router.register(r'red-apoyo', red_apoyo_viewsets,basename="red-apoyo")
 router.register(r'factor-riesgo', factor_riesgo_viewsets,basename="factor-riesgo")
 router.register(r'encuentro-dia-hora', encuentro_dia_hora_viewsets,basename="encuentro-dia-hora")
- 
-
+router.register(r'acompañamiento-recibido', acompañamiento_recibido_viewsets,basename="acompañamiento-recibido")
+router.register(r'informacion-profesional', informacion_profesional_viewsets, basename="informacion-profesional")
 
 
 # ====================== Módulo Información Académica ====================== # 
