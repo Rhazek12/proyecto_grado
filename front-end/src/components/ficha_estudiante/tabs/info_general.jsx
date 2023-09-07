@@ -1,24 +1,28 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
-import  {useEffect} from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 
 //import DatePicker from 'react-datepicker';
 
 
-var today = new Date();
-var now = today.toLocaleString();
-
 
 const Info_general = (props) =>{
 
-    const temporal = false;
+      const config = {
+            headers: {
+                  Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+      };
+
+      const config2 = {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      };
+
 
     // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
 
-    const lista_etnico = [];
 
     const [state,set_state] = useState({
 
@@ -33,7 +37,8 @@ const Info_general = (props) =>{
       lista_estado_civil:[],                      // Tabla estado_civil
       lista_condicion_de_excepcion:[],    // Tabla cond_excepcion
       seleccionado:props.codigo,
-
+      agregarPariente: false,
+      
       id_usuario:props.datos['id'],
 
       nombres:props.datos['nombre'],
@@ -43,7 +48,7 @@ const Info_general = (props) =>{
       barrio:props.datos['barrio_res'],
       municipio_actual:props.datos['ciudad_res'],     
       pais_de_origen:props.datos['pais_origen'],
-      personas_con_quien_vive : 'none',                                        
+      personas_con_quien_vive : props.datos['vive_con'],                                        
       acudiente_emergencia : props.datos['acudiente'], 
       tel_acudiente_emergencia : props.datos['telefono_acudiente'],                                                                           
       observaciones : 'none',     
@@ -63,7 +68,6 @@ const Info_general = (props) =>{
             identidad_de_genero:props.datos['el_id_de_identidad_gen'],              // Tabla identidad_gen
             estado_civil:props.datos['el_id_de_estado_civil'],                      // Tabla estado_civil
             condicion_de_excepcion:props.datos['el_id_de_cond_excepcion'],    // Tabla cond_excepcion
-
 
       ultima_actualizacion:'sin dato',                                         
 
@@ -93,11 +97,14 @@ const Info_general = (props) =>{
       //no estan por ahora
       nuevo_actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
       nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
+
+      nuevo_personas_con_quien_vive : props.datos['vive_con'],                                      
+
     })
 
     const opciones_lista_Etico = ()=>{
       
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/grupos_etnicos/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/grupos_etnicos/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -118,7 +125,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Actividad_simultanea = ()=>{
       
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/actividad_simultanea/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/actividad_simultanea/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -139,7 +146,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_identidad_de_genero = ()=>{
       
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/identidad_gen/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/identidad_gen/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -160,7 +167,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_estado_civil = ()=>{
       
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/estado_civil/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estado_civil/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -181,7 +188,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_condicion_de_excepcion = ()=>{
       
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/condicion_de_excepcion/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/condicion_de_excepcion/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -232,19 +239,85 @@ const Info_general = (props) =>{
 
 
 
+const agregarPariente = () => {
+  if (!Array.isArray(state.nuevo_personas_con_quien_vive)) {
+    set_state({
+      ...state,
+      nuevo_personas_con_quien_vive: [{
+        pariente: "",
+        nombre: "",
+      }],
+      agregarPariente: true,
+    });
+  } else {
+    set_state({
+      ...state,
+      nuevo_personas_con_quien_vive: state.nuevo_personas_con_quien_vive.concat({
+        pariente: "",
+        nombre: "",
+      }),
+      agregarPariente: true,
+    });
+  }
+};
 
 
+    
+    const guardarPariente = () => {
+      set_state({
+            ...state,
+      personas_con_quien_vive: state.nuevo_personas_con_quien_vive,
+      agregarPariente: false,
+      })
+
+      handle_upload_estudiante()
+    };
+
+
+  const cancelarPariente = () => {
+      set_state({
+            ...state,
+      nuevo_personas_con_quien_vive: state.personas_con_quien_vive,
+      agregarPariente: false,
+      })
+    };
 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
 
+      // const cambiar_datos = (e) => {
+      //       set_state({
+      //             ...state,
+      //             [e.target.name] : e.target.value
+      //       })
+      // }
       const cambiar_datos = (e) => {
-            set_state({
-                  ...state,
-                  [e.target.name] : e.target.value
-            })
+      if (e.target.name.startsWith("nuevo_personas_con_quien_vive")) {
+      // Si el campo está relacionado con personas con quien vive, actualiza el estado
+      const [indexStr, field] = e.target.name.match(/\[(\d+)\]\.(.*)/).slice(1);
+      const index = parseInt(indexStr);
+      set_state((prevState) => {
+            const newPersonasConQuienVive = [...prevState.nuevo_personas_con_quien_vive];
+            newPersonasConQuienVive[index] = {
+            ...newPersonasConQuienVive[index],
+            [field]: e.target.value,
+            };
+            return {
+            ...prevState,
+            nuevo_personas_con_quien_vive: newPersonasConQuienVive,
+            };
+      });
+      console.log("este esl personas con quie viv :  " + state.nuevo_personas_con_quien_vive)
+      } else {
+      // Si no, actualiza los demás campos normalmente
+      set_state({
+            ...state,
+            [e.target.name]: e.target.value,
+      });
       }
+      };
+
 
       const cambiar_datos_select_etnia = (e) => {
             set_state({
@@ -290,6 +363,7 @@ const Info_general = (props) =>{
 
 
   const handle_upload_estudiante = (e) => {
+      const fechaHoraActual = new Date().toISOString();
 
     let formData = new FormData();
       formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
@@ -308,11 +382,15 @@ const Info_general = (props) =>{
       formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
       formData.append('id_cond_excepcion', state.nuevo_condicion_de_excepcion !== null ? state.nuevo_condicion_de_excepcion : [null]);
       
+      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive));
+      formData.append("ult_modificacion", fechaHoraActual);
+
 
       axios({
-      url: 'https://sistemaasesback.onrender.com/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
       method: "POST",
       data: formData,
+      headers: config2,
       })
       .then((res)=>{
             console.log("este es el response : " + res)
@@ -334,6 +412,7 @@ const Info_general = (props) =>{
             identidad_de_genero:state.nuevo_identidad_de_genero_id,
             estado_civil:state.nuevo_estado_civil_id,
             condicion_de_excepcion:state.nuevo_condicion_de_excepcion_id,
+            personas_con_quien_vive:state.nuevo_personas_con_quien_vive,
 
             editar : false,
             })
@@ -360,8 +439,9 @@ const Info_general = (props) =>{
                   identidad_de_genero:state.identidad_de_genero,
                   estado_civil:state.estado_civil,
                   condicion_de_excepcion:state.condicion_de_excepcion,
-      
-                  editar : false,
+                  personas_con_quien_vive:state.personas_con_quien_vive,
+
+                  editar : true,
                   })
                   console.log("pero que esta pasando ???" )
                   alert("error al editar el estudiante :" + err)
@@ -370,22 +450,20 @@ const Info_general = (props) =>{
             //alert("error al editar el estudiante : " + props.datos.id);
       })
 
+
+       //props.handleOptionUser({ value: props.datos['id'] });
+
   }
 
-  
-    const [selectedDate, setSelectedDate] = useState(null);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-
-
-    
 
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
+            {/*
+                  <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
+                  <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+            */}
+
             {
                           state.editar ?
                           (
@@ -407,7 +485,7 @@ const Info_general = (props) =>{
                             <Row>
 
                               {
-                                  props.rolUsuario == 'superSistemas' ?
+                                  props.rolUsuario === 'superSistemas' ?
                                   (
                                     <Col xs={"12"} sm={"12"}>
                                       <Button className="boton_editar_info_basica" onClick={esta_editando}>
@@ -434,138 +512,136 @@ const Info_general = (props) =>{
                         <Col xs={"12"}>
                               <Row>
                               <h1 className="texto_subtitulo">Información del estudiante :{props.datos['nombre']}</h1>
-                              <div>
-                                    <pre>{JSON.stringify(props.datos, null, 2)}</pre>
-                              </div>
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"3"}>
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Nombres</h4>
-                                          </Col>
-                                          <Col xs={"12"} md={"3"}>
-                                                <h4 className="texto_pequeño" >{props.datos['nombre']}</h4>
-                                          </Col>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_12pt" >{props.datos['nombre']}</h4>
+                                    </Col>
 
-                                          <Col xs={"12"} md={"3"}>
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Apellidos</h4>
-                                          </Col>
-                                          <Col xs={"12"} md={"3"}>
-                                          <h4 className="texto_pequeño" >{props.datos['apellido']}</h4>
-                                          </Col>
-                                    </Row>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_12pt" >{props.datos['apellido']}</h4>
+                                    </Col>
                                     
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Puntaje Icfes</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_puntaje_icfes"
+                                                      onChange={cambiar_datos} 
+                                                      onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
+                                                      defaultValue={state.puntaje_icfes}>
+                                                </input>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_puntaje_icfes"
-                                                            onChange={cambiar_datos} 
-                                                            defaultValue={state.puntaje_icfes}>
-                                                      </input>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4  className="texto_pequeño" >{state.puntaje_icfes}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4  className="texto_pequeño_12pt" >{state.puntaje_icfes}</h4>
+                                          </Col>
+                                          )
+                                    }
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Año ingreso Univalle</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.año_ingreso_univalle}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
-
-
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Estrato</h4>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.año_ingreso_univalle}</h4>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.estrato}</h4>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.estrato}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Teléfono residencia</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_telefono_res" 
+                                                      defaultValue={state.telefono_res}
+                                                      onKeyPress={(e) => {
+                                                          const allowedCharacters = /^[0-9()+-]*$/;
+                                                          if (!allowedCharacters.test(e.key)) {
+                                                              e.preventDefault();
+                                                          }
+                                                      }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
+                                                      onChange={cambiar_datos}>
+                                                </input>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_telefono_res" defaultValue={state.telefono_res}
-                                                            onChange={cambiar_datos}></input>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.telefono_res}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.telefono_res}</h4>
+                                          </Col>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Celular</h4>
                                           </Col>
                                           {
                                                 state.editar ?
                                                 (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_celular" defaultValue={state.celular}
-                                                      onChange={cambiar_datos}
+                                                <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                      <input name="nuevo_celular" 
+                                                            defaultValue={state.celular}
+                                                            onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                            title="Solo números, paréntesis y guiones son permitidos"
+                                                            onChange={cambiar_datos}
                                                       ></input>
                                                       
                                                 </Col>
                                                 ):
                                                 (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.celular}</h4>
+                                                <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                      <h4 className="texto_pequeño_12pt" >{state.celular}</h4>
                                                 </Col>
                                                 )
                                           }
-                                    </Row>
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Email alternativo</h4>
+                                          <Col xs={"12"} md={"6"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_gris">Email alternativo</h4>
                                           </Col>
                                           {
                                                 state.editar ?
                                                 (
-                                                <Col xs={"12"} md={"6"}>
+                                                <Col xs={"12"} md={"6"} className="row_flex_general">
                                                       <input name="nuevo_email_alternativo" 
                                                             onChange={cambiar_datos} 
                                                             defaultValue={state.email_alternativo}>
@@ -573,196 +649,193 @@ const Info_general = (props) =>{
                                                 </Col>
                                                 ):
                                                 (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.email_alternativo}</h4>
+                                                <Col xs={"12"} md={"6"} className="row_flex_general">
+                                                      <h4 className="texto_pequeño_12pt" >{state.email_alternativo}</h4>
                                                 </Col>
                                                 )
                                           }
-                                    </Row>
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño_gris">Dirección residencia</h4>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Estrato</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.estrato}</h4>
                                           </Col>
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño" >{state.direccion_residencia}</h4>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.estrato}</h4>
                                           </Col>
-                                    </Row>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño_gris">Barrio</h4>
-                                          </Col>
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño" >{state.barrio}</h4>
-                                          </Col>
-                                    </Row>
-
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño_gris">Municipio actual</h4>
-                                          </Col>
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño" >{state.municipio_actual}</h4>
-                                          </Col>
-                                    </Row>
-
-                                    <Row className="row_flex_general"> 
-                                          <Col xs={"12"} md={"6"}>
-                                                <h4 className="texto_pequeño_gris">País de origen</h4>
-                                          </Col>
-                                          <Col xs={"12"} md={"6"}>
-                                                {state.pais_de_origen}
-                                          </Col>  
-                                    </Row>
-
-                                    <Row className="row_flex_general"> 
-                                          <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Grupo étnico</h4>
-                                          </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <Select
-                                                            name="nuevo_grupo_etnico"
-                                                            className="bold_select"
-                                                            options={state.lista_etnico}
-                                                            onMenuOpen={opciones_lista_Etico}
-                                                            onChange={cambiar_datos_select_etnia}
-                                                      />
-                                                </Col>      
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      {state.nuevo_grupo_etnico_id}
-                                                </Col>      
-                                                )
-                                          }
-                                    </Row>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Dirección residencia</h4>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_12pt" >{state.direccion_residencia}</h4>
+                                    </Col>
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Barrio</h4>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_12pt" >{state.barrio}</h4>
+                                    </Col>
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Municipio actual</h4>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_12pt" >{state.municipio_actual}</h4>
+                                    </Col>
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">País de origen</h4>
+                                    </Col>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          {state.pais_de_origen}
+                                    </Col>  
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                    <h4 className="texto_pequeño_gris">Grupo étnico</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <Select
+                                                      name="nuevo_grupo_etnico"
+                                                      className="bold_select"
+                                                      options={state.lista_etnico}
+                                                      onMenuOpen={opciones_lista_Etico}
+                                                      onChange={cambiar_datos_select_etnia}
+                                                />
+                                          </Col>      
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                {state.nuevo_grupo_etnico_id}
+                                          </Col>      
+                                          )
+                                    }
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Actividad simultánea</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <Select
+                                                className="bold_select"
+                                                options={state.lista_actividad_simultanea}
+                                                onMenuOpen={opciones_lista_Actividad_simultanea}
+                                                onChange={cambiar_datos_select_actividad_simultanea}
+                                                />
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <Select
-                                                      className="bold_select"
-                                                      options={state.lista_actividad_simultanea}
-                                                      onMenuOpen={opciones_lista_Actividad_simultanea}
-                                                      onChange={cambiar_datos_select_actividad_simultanea}
-                                                      />
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      {state.actividad_simultanea}
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
-
-
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                {state.actividad_simultanea}
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <Select
-                                                      className="bold_select"
-                                                      options={state.lista_identidad_de_genero}
-                                                      onMenuOpen={opciones_lista_identidad_de_genero}
-                                                      onChange={cambiar_datos_select_identidad_de_genero}
-                                                      />
-                                                </Col>   
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      {state.identidad_de_genero}
-                                                </Col>   
-                                                )
-                                          }
-                                    </Row>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Sexo</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <Select
+                                                className="bold_select"
+                                                options={state.lista_identidad_de_genero}
+                                                onMenuOpen={opciones_lista_identidad_de_genero}
+                                                onChange={cambiar_datos_select_identidad_de_genero}
+                                                />
+                                          </Col>   
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                {state.identidad_de_genero}
+                                          </Col>   
+                                          )
+                                    }
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_sexo" 
+                                                      onChange={cambiar_datos} 
+                                                      defaultValue={state.sexo}>
+                                                </input>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_sexo" 
-                                                            onChange={cambiar_datos} 
-                                                            defaultValue={state.sexo}>
-                                                      </input>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.sexo}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.sexo}</h4>
+                                          </Col>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Estado civil</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <Select
+                                                className="bold_select"
+                                                options={state.lista_estado_civil}
+                                                onMenuOpen={opciones_lista_estado_civil}
+                                                onChange={cambiar_datos_select_estado_civil}
+                                                />
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <Select
-                                                      className="bold_select"
-                                                      options={state.lista_estado_civil}
-                                                      onMenuOpen={opciones_lista_estado_civil}
-                                                      onChange={cambiar_datos_select_estado_civil}
-                                                      />
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      {state.estado_civil}
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                {state.estado_civil}
+                                          </Col>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Cantidad hijo(s)</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_cantidad_hijo" 
+                                                      onChange={cambiar_datos} 
+                                                      defaultValue={state.cantidad_hijo}>
+                                                </input>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_cantidad_hijo" 
-                                                            onChange={cambiar_datos} 
-                                                            defaultValue={state.cantidad_hijo}>
-                                                      </input>
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.cantidad_hijo}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.cantidad_hijo}</h4>
+                                          </Col>
+                                          )
+                                    }
 
                                     {
                                     /*
@@ -780,7 +853,7 @@ const Info_general = (props) =>{
                                                 ):
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.actividades_tiempo_libre}</h4>
+                                                      <h4 className="texto_pequeño_12pt" >{state.actividades_tiempo_libre}</h4>
                                                 </Col>
                                                 )
                                           }
@@ -788,52 +861,48 @@ const Info_general = (props) =>{
                                     */
                                     }
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Deportes que practica</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_deportes_que_practica" 
+                                                      onChange={cambiar_datos} 
+                                                      defaultValue={state.deportes_que_practica}>
+                                                </input>
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_deportes_que_practica" 
-                                                            onChange={cambiar_datos} 
-                                                            defaultValue={state.deportes_que_practica}>
-                                                      </input>
-                                                </Col>
-                                                ):
-                                                ( 
-                                                <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.deportes_que_practica}</h4>
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          ( 
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.deportes_que_practica}</h4>
+                                          </Col>
+                                          )
+                                    }
 
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                    <Col xs={"12"} md={"6"} className="row_flex_general">
                                           <h4 className="texto_pequeño_gris">Condición de excepciòn</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"6"} className="row_flex_general">
+                                                <Select
+                                                className="bold_select"
+                                                options={state.lista_condicion_de_excepcion}
+                                                onMenuOpen={opciones_lista_condicion_de_excepcion}
+                                                onChange={cambiar_datos_select_condicion_de_excepcion}
+                                                />
                                           </Col>
-                                          {
-                                                state.editar ?
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      <Select
-                                                      className="bold_select"
-                                                      options={state.lista_condicion_de_excepcion}
-                                                      onMenuOpen={opciones_lista_condicion_de_excepcion}
-                                                      onChange={cambiar_datos_select_condicion_de_excepcion}
-                                                      />
-                                                </Col>
-                                                ):
-                                                (
-                                                <Col xs={"12"} md={"6"}>
-                                                      {state.condicion_de_excepcion}
-                                                </Col>
-                                                )
-                                          }
-                                    </Row>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"6"} className="row_flex_general">
+                                                {state.condicion_de_excepcion}
+                                          </Col>
+                                          )
+                                    }
 
 
                                     {
@@ -862,37 +931,158 @@ const Info_general = (props) =>{
                         </Col>
                   </Row>
 
+{state.personas_con_quien_vive !== null ? (
+  <Row>
+    <h1 className="texto_subtitulo">Personas con quién vive</h1>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Nombre Completo
+    </Col>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Parentesco
+    </Col>
+
+    {state.editar || state.agregarPariente ? (
+      <Row>
+      {
+        state.personas_con_quien_vive.length > 0 ?
+        (
+          <Row>
+              {state.nuevo_personas_con_quien_vive.map((item, index) => (
+                <Row className="row_flex_general">
+                  <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                    <input
+                      className="texto_pequeño_12pt"
+                      name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                      onChange={cambiar_datos}
+                      defaultValue={item.nombre}
+                    ></input>
+                  </Col>
+                  <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                    <input
+                      className="texto_pequeño_12pt"
+                      name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                      onChange={cambiar_datos}
+                      defaultValue={item.pariente}
+                    ></input>
+                  </Col>
 
 
-
-                  <Row>
-                    <h1 className="texto_subtitulo">Personas con quién vive</h1>
-
-                    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Nombre Completo</Col>
-                    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Parentesco</Col>
-
-                    {state.editar ?
-                    (
-                        <Row className="row_flex_general">
-                              <Col xs={"6"} md={"6"} className="texto_pequeño"><input className="texto_pequeño"></input></Col>
-                              <Col xs={"6"} md={"6"} className="texto_pequeño"><input className="texto_pequeño"></input></Col>                            
-                        </Row>
-                        
-                    )
-                        :
-                        (
-                        <Row className="row_flex_general">
-                              <Col xs={"6"} md={"6"} className="texto_pequeño">Ejemplo1</Col>
-                              <Col xs={"6"} md={"6"} className="texto_pequeño">Parentesco1</Col>
-                              <Col xs={"12"} className="col_adicionar_parentesco">
-                                    <Button className="adicionar_parentesco">
-                                          <i class="bi bi-plus-circle"></i>
-                                    </Button>
-                              </Col>
-                          </Row>
-                        )
-                        }
                 </Row>
+            ))}
+              <Col xs={"12"} className="col_adicionar_parentesco">
+                    <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                          Guardar
+                    </Button>
+                    <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                          Cancelar
+                    </Button>
+              </Col>
+          </Row>
+          )
+        :
+        (<Row>
+          <Col xs={"12"} className="col_adicionar_parentesco">
+                <Button className="adicionar_parentesco" onClick={agregarPariente}>
+                <i class="bi bi-plus-circle"></i>
+                </Button>
+          </Col>
+        </Row>)
+      }
+        
+
+      </Row>
+    ) : (
+      <Row>
+
+
+      {
+        state.personas_con_quien_vive.length > 0 ?
+        (
+          <Row>
+              {state.personas_con_quien_vive.map((item, index) => (
+                <Row>
+                  <Col xs={"12"} md={"6"} className="texto_pequeño">
+                    {item.nombre}
+                  </Col>
+                  <Col xs={"12"} md={"6"} className="texto_pequeño">
+                    {item.pariente}
+                  </Col>
+                </Row>
+              ))}
+          </Row>
+          )
+        :
+        (<Row></Row>)
+      }
+
+
+
+      <Col xs={"12"} className="col_adicionar_parentesco">
+            <Button className="adicionar_parentesco" onClick={agregarPariente}>
+            <i class="bi bi-plus-circle"></i>
+            </Button>
+      </Col>
+      </Row>
+    )}
+  </Row>
+) : 
+
+
+
+
+
+(
+  <Row>
+      <h1 className="texto_subtitulo">Personas con quién vive</h1>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Nombre Completo
+    </Col>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Parentesco
+    </Col>
+  {state.agregarPariente ? (
+      <Row>
+        {state.nuevo_personas_con_quien_vive.map((item, index) => (
+          <Row className="row_flex_general">
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                onChange={cambiar_datos}
+                defaultValue={item.nombre}
+              ></input>
+            </Col>
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                onChange={cambiar_datos}
+                defaultValue={item.pariente}
+              ></input>
+            </Col>
+          </Row>
+        ))}
+      <Col xs={"12"} className="col_adicionar_parentesco">
+            <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                  Guardar
+            </Button>
+            <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                  Cancelar
+            </Button>
+      </Col>
+      </Row>
+    ) : (
+      <Row>
+          <Col xs={"12"} className="col_adicionar_parentesco">
+                <Button className="adicionar_parentesco" onClick={agregarPariente}>
+                <i class="bi bi-plus-circle"></i>
+                </Button>
+          </Col>
+      </Row>
+    )}
+  </Row>
+)}
+
                 
                 <Row>
                         <h1 className="texto_subtitulo">Información general del acudiente de emergencia</h1>
@@ -901,14 +1091,14 @@ const Info_general = (props) =>{
                         {state.editar ?
                               (
                         <Row className="row_flex_general">
-                              <Col xs={"12"} md={"6"}className="texto_pequeño">
-                                    <input className="texto_pequeño"
+                              <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">
+                                    <input className="texto_pequeño_12pt"
                                           name="nuevo_deportes_que_practica" 
                                           onChange={cambiar_datos} 
                                           defaultValue={state.deportes_que_practica}></input>
                               </Col>
-                              <Col xs={"12"} md={"6"}className="texto_pequeño">
-                                    <input className="texto_pequeño"
+                              <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">
+                                    <input className="texto_pequeño_12pt"
                                           name="nuevo_deportes_que_practica" 
                                           onChange={cambiar_datos} 
                                           defaultValue={state.deportes_que_practica}></input>
@@ -919,15 +1109,15 @@ const Info_general = (props) =>{
                       :
                       (
                       <Row className="row_flex_general">
-                            <Col xs={"12"} md={"6"}className="texto_pequeño">{props.datos['acudiente']}</Col>
-                            <Col xs={"12"} md={"6"}className="texto_pequeño">{props.datos['telefono_acudiente']} </Col>
+                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{props.datos['acudiente']}</Col>
+                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{props.datos['telefono_acudiente']} </Col>
                         </Row>
                       )
                       }
                 </Row>
                 <Row>
                     <h1 className="texto_subtitulo">Observaciones</h1>
-                    <h4 className="texto_pequeño">texto</h4>
+                    <h4 className="texto_pequeño_12pt">texto</h4>
                 </Row>
 
             </Col>    

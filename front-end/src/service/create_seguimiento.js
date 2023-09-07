@@ -3,7 +3,12 @@ import axios from 'axios';
 const create_seguimiento = async (formData) => {
     var respuesta = false;
     try {
-        const url_axios = 'https://sistemaasesback.onrender.com/seguimiento/seguimiento_individual/';
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+        };
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimiento_individual/`;
 
         const seguimiento = {
             "fecha": formData.fecha,
@@ -71,7 +76,7 @@ const create_seguimiento = async (formData) => {
             "id_estudiante": formData.id_estudiante
         }
 
-        await axios.post(url_axios, seguimiento)
+        await axios.post(url_axios, seguimiento, config)
         .then(res=>{
             console.log(res);
             respuesta = true;

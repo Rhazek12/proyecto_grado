@@ -4,4 +4,10 @@ djangorestframework
 djangorestframework-simplejwt
 psycopg2
 psycopg2-binary
+pandasDjango
+django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
+django-environ
+psycopg2-binary
 pandas

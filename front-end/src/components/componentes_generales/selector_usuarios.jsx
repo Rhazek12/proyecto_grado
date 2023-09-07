@@ -15,16 +15,22 @@ import user_rol_manage from '../../service/user_rol_manage';
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+
 var bandera_consulta_rol = 0;
 var bandera_option_user = true;
 var bandera_option_rol = true;
 const datos_option_user = []
 const datos_option_rol = []
-const selector_usuarios = () =>{
+
+const Selector_usuarios = () =>{
 
   /*
     constantes
   */
+  const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
   const [state,set_state] = useState({
     rol: '',
@@ -41,31 +47,31 @@ const selector_usuarios = () =>{
   const [show, setShow] = useState(false);
   const columnas =[
     {
-      name: 'USERNAME',
-      selector: row => row.username,
+      name: 'USUARIO',
+      selector: 'user_username',
       sortable: true,
     },
     {
       name: 'NOMBRES',
-      selector: row => row.first_name,
+      selector: 'user_first_name',
       sortable: true,
     },
     {
       name: 'APELLIDOS',
-      selector: row => row.last_name,
+      selector: 'user_last_name',
       sortable: true,
     },
     {
       name: 'EMAIL',
-      selector: row => row.email,
+      selector: 'user_email',
       sortable: true,
     },
     {
       name: 'ROL',
-      selector: row => row.nombre,
+      selector: 'rol_nombre',
       sortable: true,
-    },
-  ]
+    },
+  ]
   /*
     UseEffect: se ejecuta al iniciar la pestaña. En el está alojada la función de traer todos los usuarios
     necesaria para el selector de usuarios.
@@ -92,26 +98,33 @@ const selector_usuarios = () =>{
       })
       bandera_consulta_rol++;
       console.log(bandera_consulta_rol)
+      console.log(state.data_user_rol)
     }
 
     
   }
-  const consulta_all_user_rol = (e)=>{
-
-      all_users_rols.all_users_rols().then((res) => {
-        set_state({
-          ...state,
-          data_user_rol : res
-        })
-      })
-
-  }
+  const consulta_all_user_rol = (e) => {
+    let pk = sessionStorage.getItem('sede_id');
+  
+    all_users_rols.all_users_rols(pk).then((res) => {
+      if (Array.isArray(res.data)) {
+        const updatedData = res.data;
+  
+        set_state(prevState => ({
+          ...prevState,
+          data_user_rol: updatedData
+        }));
+      } 
+    });
+  };
+  
+  
 
   const handle_user_selector = (e) => {
     if(bandera_option_user==true){
 
       for (var i = 0; i < state.data_user['length'] ; i++) {
-        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
+        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
         datos_option_user.push(dato)
       }
       console.log([datos_option_user]);
@@ -149,11 +162,13 @@ const selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id', e.id);
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  "https://sistemaasesback.onrender.com/usuario_rol/usuario_rol/"+e.id+"/",
-      method: "GET",
+      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/actual_usuario_rol/`+e.id+"/",
+      method: "PUT",
+      headers: config,
       data: formData,
     })
     .then(res=>{set_state({
@@ -192,23 +207,29 @@ const selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id_rol', state.id_rol[0]);
-    formData.append('id_usuario', state.id_usuario[0]);
-    try {
-      user_rol.user_rol(formData);
-      set_state({
-        ...state,
-        info_modal: "El rol se asignó correctamente"
-      })
-    } catch (error) {
-      set_state({
-        ...state,
-        info_modal: "ocurrio un error"
-      })
+    formData.append('id_user', state.id_usuario[0]);
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    user_rol.user_rol(formData)
+        .then(() => {
+            // Actualizar el estado después de asignar el rol
+            set_state({
+                ...state,
+                rol_actual: state.rol[0] || '',
+                info_modal: "El rol se asignó correctamente"
+            });
+            setShow(true);
+        })
+        .catch(() => {
+            set_state({
+                ...state,
+                info_modal: "Ocurrió un error"
+            });
+            setShow(true);
+        });
     }
-    setShow(true);
-  }
+
+
   const set_info = (e) => {
-    bandera_option_user = true;
     bandera_option_rol = true;
     bandera_consulta_rol = true;
     setShow(false)
@@ -239,19 +260,18 @@ const selector_usuarios = () =>{
     })
   };
   const delete_user_rol = () => {
-    console.log('Selected Rows 2: ', state.select_rows[0], 'total: ', state.select_rows.length);
     for(var i = 0; i < state.select_rows.length ; i++) {
-      const id_user = state.select_rows[i].id
-      let formData = new FormData();
-      formData.append('id', id_user);
+      const id_user_rol = state.select_rows[i].id
+
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "https://sistemaasesback.onrender.com/usuario_rol/usuario_rol/"+id_user+"/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+id_user_rol+"/",
         method: "PUT",
-        data: formData,
+        headers: config,
       })
     }
+    consulta_all_user_rol();
     
   }
   
@@ -262,48 +282,52 @@ const selector_usuarios = () =>{
             <Accordion.Header onClick={consulta_all_rol}>Selector de Usuarios</Accordion.Header>
             <Accordion.Body>
             <Row className="g-2">
-                <h3>Selecciona un usuario</h3>
+              <h4>Selecciona un usuario</h4>
             </Row>
             <Row className="mb-3">
-
-                <Select class="form-control" options={datos_option_user} onMenuOpen={handle_user_selector} onChange={handle_option_user} className="g-2" />
-                
+                <Select
+                    class="form-control"
+                    options={datos_option_user}
+                    onMenuOpen={handle_user_selector}
+                    onChange={handle_option_user}
+                    className="g-2"
+                />
             </Row>
             <Row className="g-2">
-                <h6>Nombre Completo:</h6>
+                <h4>Nombre Completo:</h4>
             </Row>
             <Row className="g-2">
-                <Form.Control as="textarea" value={state.usuario}  rows={1} readOnly/>
+                <p>{state.usuario}</p>
             </Row>
             <Row className="g-2">
-                <h6>Rol actual(Periodo):</h6>
+            <h4>Rol actual:</h4>
             </Row>
             <Row className="g-2">
-                <Form.Control as="textarea" value={state.rol_actual}  rows={1} readOnly/>
+                <p>{state.rol_actual}</p>
             </Row>
             <Row className="g-2">
-                <h3>Selecciona un Rol (Periodo):</h3>
+                <h4>Selecciona un Rol (Periodo):</h4>
             </Row>
-
-            <Row className="g-2" >
-              <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_rol_selector} onChange={handle_option_rol} className="g-2" />
-                
+            <Row className="g-2">
+                <Select
+                    class="form-control"
+                    options={datos_option_rol}
+                    onMenuOpen={handle_rol_selector}
+                    onChange={handle_option_rol}
+                    className="g-2"
+                />
             </Row>
-            <Row className='mt-2'> 
-                <Col lg={{ span: 1, offset: 5}}>
-                    <Button onClick={handle_upload}>Aceptar</Button> 
-   
+            <Row className="mt-2">
+                <Col lg={{ span: 1, offset: 5 }}>
+                    <Button onClick={handle_upload}>Aceptar</Button>
                 </Col>
-                <Col>
-
-                    <Button onClick={set_info}>Cancelar</Button> 
-                </Col>    
             </Row>
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="1">
           <Accordion.Header onClick={consulta_all_user_rol}>Lista de Usuarios</Accordion.Header>
             <Accordion.Body>
+            {/*
               <DataTable 
               title="Usuarios"
               columns={columnas}
@@ -314,6 +338,27 @@ const selector_usuarios = () =>{
               selectableRows
               onSelectedRowsChange={handleChange}
               />
+              */}
+              <DataTableExtensions
+                columns={columnas}
+                data={state.data_user_rol}
+                filter={true}
+                filterPlaceHolder={2}
+                filterDigit={1}
+                exportHeaders={true}
+                >
+
+                <DataTable
+                  title="Usuarios"
+                  noDataComponent="Cargando Información."
+                  pagination 
+                  paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+                  selectableRows
+                  onSelectedRowsChange={handleChange}
+                  striped
+                  keyField="id"
+                  />
+              </DataTableExtensions>
               <Button onClick={delete_user_rol}>Eliminar Rol</Button> 
             </Accordion.Body>
           </Accordion.Item>
@@ -334,7 +379,7 @@ const selector_usuarios = () =>{
   )
 }
 
-export default selector_usuarios
+export default Selector_usuarios
 
 
   

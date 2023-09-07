@@ -11,7 +11,13 @@ import { NavLink } from 'react-router-dom';
 
 const Carga_masiva = () => {
 
-  const userRole = sessionStorage.getItem('rol');
+  const config = {
+    headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
+  const userRole = sessionStorage.getItem('permisos');
 
   const [state, set_state] = useState({
     data1: [],
@@ -23,7 +29,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('https://sistemaasesback.onrender.com/usuario_rol/profesional/')
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -34,7 +40,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('https://sistemaasesback.onrender.com/usuario_rol/practicante/')
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -45,7 +51,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('https://sistemaasesback.onrender.com/usuario_rol/monitor/')
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -57,7 +63,7 @@ const Carga_masiva = () => {
       });
 
 
-      axios.get('https://sistemaasesback.onrender.com/usuario_rol/estudiante_selected/')
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`, config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -78,7 +84,7 @@ const Carga_masiva = () => {
   }, [state.data1, state.data2, state.data3, state.data4]);
 
   return (
-    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+    <>{userRole.includes('view_gestion_asignaciones') ? <Col className="contenido_children">
         <Row>
           <Col>
             <Row className="justify-content-md-center">

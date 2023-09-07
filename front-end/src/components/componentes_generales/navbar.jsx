@@ -1,62 +1,109 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Dropdown} from "react-bootstrap";
+import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-
 import Logos from './LOGO BLANCORecurso 1.png';
+import { useLocation } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
+const Navbar = (props) =>{
 
-const navbar = (props) =>{
-
-    const [url, setUrl] = useState('');
-
+    const location = useLocation();
+    const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
+  
     useEffect(() => {
-        const currentUrl = window.location.href;
-        const subUrl = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
-        setUrl(subUrl);
-    }, []);
+      const currentUrl = window.location.href;
+      const storedRoutes = sessionStorage.getItem('lastVisitedRoutes');
+      let updatedRoutes = [];
+  
+      if (storedRoutes) {
+        updatedRoutes = JSON.parse(storedRoutes);
+  
+        if (updatedRoutes.includes(currentUrl)) {
+          const index = updatedRoutes.indexOf(currentUrl);
+          updatedRoutes.splice(index, 1);
+        }
+  
+        updatedRoutes.unshift(currentUrl);
+        if (updatedRoutes.length > 3) {
+          updatedRoutes.pop();
+        }
+      } else {
+        updatedRoutes = [currentUrl];
+      }
+  
+      sessionStorage.setItem('lastVisitedRoutes', JSON.stringify(updatedRoutes));
+      setLastVisitedRoutes(updatedRoutes.reverse());
+    }, [location]);
+  
+
+  
+    const getSegmentsFromUrl = (url) => {
+        const segments = url.split('/');
+        return segments.slice(1, 2); // Obtener el cuarto segmento (índice 3)
+      };
+
+    const handleSalir = () => {
+        sessionStorage.clear();
+        window.location.replace('');
+      };
+
+      const getTitleFromUrl = (url) => {
+  const segments = url.split('/');
+  const lastSegment = segments.slice(1)[2]; // Obtener el último segmento
+  return lastSegment.replaceAll('_', ' '); // Reemplazar "_" por " "
+};
+
+
+
 
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
-    const handleSalir = () =>{
-        sessionStorage.removeItem('token')
-        sessionStorage.removeItem('refresh-token')
-        sessionStorage.removeItem('email')
-        sessionStorage.removeItem('first_name')
-        sessionStorage.removeItem('instancia')
-        sessionStorage.removeItem('last_name')
-        sessionStorage.removeItem('nombre_completo')
-        sessionStorage.removeItem('instancia_id')
-        sessionStorage.removeItem('rol')
-        sessionStorage.removeItem('semestre_actual')
-        sessionStorage.removeItem('username')
-        sessionStorage.removeItem('message')
-        window.location.replace('');
-    }    
+    // const handleSalir = () =>{
+    //     sessionStorage.removeItem('token')
+    //     sessionStorage.removeItem('refresh-token')
+    //     sessionStorage.removeItem('email')
+    //     sessionStorage.removeItem('first_name')
+    //     sessionStorage.removeItem('instancia')
+    //     sessionStorage.removeItem('last_name')
+    //     sessionStorage.removeItem('nombre_completo')
+    //     sessionStorage.removeItem('instancia_id')
+    //     sessionStorage.removeItem('rol')
+    //     sessionStorage.removeItem('semestre_actual')
+    //     sessionStorage.removeItem('username')
+    //     sessionStorage.removeItem('message')
+    //     window.location.replace('');
+    // }    
 
-    const menuOptions=[
-        {
-            id:1,
-            path:"/",
-            name:"Analitics",
-            icon:<FaRegChartBar />,
-        },
-        {
-            id:2,
-            path:"/ficha_estudiante",
-            name:"fichaDeEstudiante aiiiiiiiiiiiiiiii",
-            icon:<FaThList />,
-            thisIsOpen:true,
-        }
-    ]
     return (
     <Container  >
         <Row className="nav">
 
-            <Col xs={"4"} md={"6"}>
+        <Col xs={"5"} md={"2"} href={"/"}>
+            <Link to={`/`}> 
                 <img src={Logos} className="logo" alt='/'></img>
-            </Col>
+            </Link>
+        </Col>
+
+
+
+        <div class="d-none d-md-inline col-md-6">
+          <Col className="ulDropdown">
+            <Row>
+              {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
+              {lastVisitedRoutes.reverse().map((url, index) => (
+                <Col key={index} md={'4'} className="col_historial">
+                  <a href={url}> 
+                  {getTitleFromUrl(url) === '' ? 'Inicio' : getTitleFromUrl(url)}
+                  </a>
+                  <i class="bi bi-chevron-right"></i>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        </div>
+
+
 
 {/* 
             <Col className="ulDropdown" xs={"5"} md={"4"}>            
@@ -75,38 +122,35 @@ const navbar = (props) =>{
             </Col> */}
 
 
-            <Col className="boton_perfil" xs={"2"} md={"5"}>
-                <Row>
-                        <div class="d-none d-md-inline col-md-9" >
+            <Col className="boton_perfil" xs={"7"} md={"4"}>
+                <Row >
 
-                            <Col xs={"1"} sm={"1"} md={"9"} className="info_perfil">
-                                <Row>{sessionStorage.nombre_completo} </Row>
-                                <Row>Enlace del documento de aceptación t.d.p</Row>
-                            </Col>
-                        </div>
+                    <Col xs={"7"} md={"7"} className="info_perfil">
+                        <Row>{sessionStorage.nombre_completo} </Row>
+                        <Row>{sessionStorage.rol}</Row>
+                        <Row>{sessionStorage.sede}</Row>
+                    </Col>
 
                     
-                    <Col xs={"12"} sm={"12"} md={"3"} className="desplegable_usuario">
-                         <Row onClick={toggle}>
-                                <Col xs={"7"} md={"4"} >
-                                    <label className="boton_usuario">
-                                        <i class="bi bi-person-fill"/>
-                                    </label>
+                    <Col xs={"5"} md={"3"}>
+                         <Row onClick={toggle} className="desplegable_usuario">
+                                <Col xs={"10"} md={"6"} className="boton_usuario">
+                                    <i class="bi bi-person-circle"></i>
                                 </Col>
                                 {
                                     isOpen ?
                                     (
-                                        <div class="d-none d-lg-inline col-md-3"> 
+                                        <div class="d-none d-md-inline col-md-5" >
                                             <Col className="flecha_usuario">
-                                                <i class="bi bi-chevron-up"></i>
+                                                <i class="bi bi-caret-up-fill"></i>
                                             </Col>
                                         </div>
                                     )
                                     :
                                     (
-                                        <div class="d-none d-lg-inline col-md-3"> 
-                                            <Col  xs={"2"}  md={"3"} className="flecha_usuario">
-                                                <i class="bi bi-chevron-down"></i>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-down-fill"></i>
                                             </Col>
                                         </div>
                                     )
@@ -141,4 +185,4 @@ const navbar = (props) =>{
     )
 }
 
-export default navbar 
+export default Navbar 

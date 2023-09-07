@@ -6,10 +6,15 @@ import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
 import DataTable, {createTheme} from 'react-data-table-component';
-const carga_masiva_component = () =>{
+
+const Carga_masiva_component = () =>{
+
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
   const[switchChecked, setChecked] = useState(false);
-  const url_carga = "https://sistemaasesback.onrender.com/carga_masiva/carga/"
+  const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   
 
   const [state,set_state] = useState({
@@ -59,6 +64,7 @@ const carga_masiva_component = () =>{
       // Endpoint to send files
       url: url_carga,
       method: "POST",
+      headers: config,
       data: formData,
     })
     .then((res)=>{
@@ -89,22 +95,26 @@ const carga_masiva_component = () =>{
   const handleClose = () => setShow(false);
 
   return (
-        <Container>
-
-            <Row >
-                  <h4>Tipo de Carga</h4>
-            </Row>
+        <Container className="mi-clase-background">
 
             <Row className='mt-2' >
+
+            <h5>Tipo de Carga</h5>
 
               <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
+                  <option value="Programa_estudiante">Programa estudiante</option>
+                  <option value="Estudiante_Cohorte">Cohorte estudiante</option>
                   <option value="Usuario">Usuario</option>
-                  <option value="Materia">Materia</option>
-                  <option value="Nota">Nota</option>
                   <option value="Programa">Programa</option>
+                  <option value="Materia">Materia</option>
+                  <option value="Matricula">Matricula</option>
                   <option value="Retiro">Retiro</option>
+                  <option value="Ficha">Ficha de seguimiento</option>
+                  <option value="Inasistencia">Inasistencia</option>
+                  <option value="Dir_programa">Director de programa</option>
+                  <option value="Vcd_academico">Vicedecano</option>
                 </Form.Select>
               </Col>
             </Row>
@@ -112,7 +122,7 @@ const carga_masiva_component = () =>{
               <Col sm={9}>
                 <Form.Control type="file" name='file' onChange={handle_file}/>   
               </Col>
-              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
+              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0" target="_blank">Plantillas de Carga</a>
     
             </Row>
             <Row className='mt-2'>
@@ -143,7 +153,7 @@ const carga_masiva_component = () =>{
   )
 }
 
-export default carga_masiva_component
+export default Carga_masiva_component
 
 
   

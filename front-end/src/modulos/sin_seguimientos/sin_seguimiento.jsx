@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import Select from 'react-select';
-import Switch from 'react-switch';
-import Component_reporte_seguimientos from "../../components/reporte_seguimientos/desplegable";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import Cabecera from "../../components/reporte_seguimientos/cabecera";
+import {Row, Col } from "react-bootstrap";
 import Tabla_sin_seguimientos from "../../components/sin_seguimientos/tabla_sin_seguimientos";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import  {useEffect} from 'react';
@@ -14,20 +7,23 @@ import axios from 'axios';
 
 const Sin_seguimientos = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
+    const userRole = sessionStorage.getItem('permisos');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],
     })
 
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
 
         useEffect(()=>{
         axios({
           // Endpoint to send files
-          url:  "https://sistemaasesback.onrender.com/usuario_rol/semestre/"+14+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/semestre/`+14+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({
@@ -43,7 +39,7 @@ const Sin_seguimientos = () =>{
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_estudiantes_sin_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_sin_seguimientos semestre_activo={state.semestre_activo['id']}></Tabla_sin_seguimientos>
             </Row>

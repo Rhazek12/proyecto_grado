@@ -2,12 +2,13 @@ from django.db import models
 from modulo_geografico.models import barrio, municipio
 from modulo_instancia.models import semestre,cohorte
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 # Create your models here.
 class cond_excepcion(models.Model):
 
-    cond_excepcion= models.CharField(max_length=100)
+    cond_excepcion= models.CharField(max_length=200)
     alias= models.CharField(max_length=20)
     
     class Meta:
@@ -62,28 +63,28 @@ class estudiante (models.Model):
     num_doc_ini= models.BigIntegerField()
     tipo_doc= models.CharField(max_length=30)
     num_doc= models.BigIntegerField(default=None)
-    dir_ini= models.CharField(max_length=50, default=None)
+    dir_ini= models.CharField(max_length=100, default=None)
     barrio_ini=models.ForeignKey(barrio ,on_delete=models.CASCADE,default=0,related_name='barrio_inicial')
     ciudad_ini=models.ForeignKey(municipio ,on_delete=models.CASCADE,default=0,related_name='ciudad_inicial')
-    telefono_ini=models.BigIntegerField(default=None)
-    dir_res= models.CharField(max_length=50, default=None)
+    telefono_ini=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
+    dir_res= models.CharField(max_length=100, default=None)
     barrio_res=models.ForeignKey(barrio ,on_delete=models.CASCADE,default=0,related_name='barrio_actual')
     ciudad_res=models.ForeignKey(municipio ,on_delete=models.CASCADE,default=0,related_name='ciudad_actual')
-    telefono_res=models.BigIntegerField(default=None)
+    telefono_res=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
     email=models.CharField(max_length=100, default=None)
     sexo=models.CharField(max_length=20)
-    colegio=models.CharField(max_length=60, default=None)
-    estamento=models.CharField(max_length=10, default=None)
+    colegio=models.CharField(max_length=100, default=None)
+    estamento=models.CharField(max_length=20, default=None)
     estado_ases= models.BooleanField(default=True)
-    celular=models.BigIntegerField(default=0)
+    celular=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
     hijos=models.IntegerField(default=0)
     acudiente=models.CharField(max_length=100, default=None)
-    telefono_acudiente=models.BigIntegerField(default=None)
+    telefono_acudiente=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
     fecha_nac = models.DateTimeField(auto_now_add=False,null=True)
     ciudad_nac = models.ForeignKey(municipio ,on_delete=models.CASCADE,default=None,null=True,related_name='ciudad_nacimiento')
     observacion = models.CharField(max_length=500, default=None,null=True)
     id_discapacidad =models.ForeignKey(discap_men,on_delete=models.CASCADE,default=None,null=True,related_name='discap_men_in_estudiante')
-    vive_con = models.CharField(max_length=1000, default=None,null=True)
+    vive_con = models.JSONField(default=dict, null=True)
     id_cond_excepcion=models.ForeignKey(cond_excepcion ,on_delete=models.CASCADE,default=None,null=True,related_name='cond_excepcion_in_estudiante')
     id_estado_civil=models.ForeignKey(estado_civil ,on_delete=models.CASCADE,default=None,null=True,related_name='estado_civil_in_estudiante')
     id_identidad_gen=models.ForeignKey(identidad_gen,on_delete=models.CASCADE,default=None,null=True,related_name='identidad_gen_in_estudiante')
@@ -97,8 +98,6 @@ class estudiante (models.Model):
 
     class Meta:
         db_table = "estudiante"
-    def __str__(self):
-        return self.cod_univalle
 
 class rol (models.Model):
 
@@ -109,6 +108,36 @@ class rol (models.Model):
         db_table = "rol"
     def __str__(self):
         return self.nombre
+
+
+
+
+class monitor (models.Model):
+    id_user= models.ForeignKey(User,on_delete=models.CASCADE,default=None,related_name='id_user', null=True)
+    tipo_doc= models.CharField(max_length=30, null=True)
+    cod_univalle = models.CharField(max_length=12,unique = True)
+    num_doc= models.BigIntegerField(default=None, null=True)
+    dir_res= models.CharField(max_length=50, default=None, null=True)
+    barrio_res=models.ForeignKey(barrio ,on_delete=models.CASCADE,default=0,related_name='barrio', null=True)
+    ciudad_res=models.ForeignKey(municipio ,on_delete=models.CASCADE,default=0,related_name='ciudad', null=True)
+    sexo=models.CharField(max_length=20, null=True)
+    telefono=models.BigIntegerField(default=None, null=True)
+    celular=models.BigIntegerField(default=0, null=True)
+    acudiente=models.CharField(max_length=100, default=None, null=True)
+    telefono_acudiente=models.BigIntegerField(default=None, null=True)
+    fecha_nac = models.DateTimeField(auto_now_add=False,null=True)
+    observacion = models.CharField(max_length=500, default=None,null=True)
+    anio_ingreso=models.DateTimeField(auto_now_add=False,null=True)
+    ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
+
+    class Meta:
+        db_table = "monitor"
+
+    def __str__(self):
+        return str(self.num_doc)
+
+
+
 
 class usuario_rol (models.Model):
 
@@ -147,3 +176,16 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
+
+
+class firma_tratamiento_datos(models.Model):
+
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    tipo_id_estudiante= models.CharField(max_length=10,default=None,unique=True)
+    fecha_firma = models.DateTimeField(auto_now_add=False,null=False)
+    nombre_firma= models.CharField(max_length=50,default=None)
+    correo_firma= models.CharField(max_length=50,default=None)
+    autoriza= models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = "firma_tratamiento_datos"

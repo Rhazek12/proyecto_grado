@@ -3,20 +3,57 @@ import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
 
 const Listas = (props) => {
 
+
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
+    const config2 = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const{childClicked, childClicked2} = props
-    
+
+
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
+
+    const [show3, setShow3] = useState(false);
+    const handleClose3 = () => setShow3(false);
+    const handleShow3 = () => setShow3(true);
+
     const quitar_estudiante = (e) =>{
-      axios.get('https://sistemaasesback.onrender.com/asignacion/asignacion_estudiante/'+props.item.id+'/')
-      .then(response => {
-        childClicked2(props.monitor_seleccionado)
-        alert("estudiante "+props.item.id+" eliminado correctamente")
-      })
-      .catch(error => {
-        alert("error al eliminar el estudiante : "+props.item.id);
-      });
+        let formData = new FormData();
+
+        formData.append("llamada", "eliminar");
+        formData.append("id_usuario", props.monitor_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_estudiante", props.item.id);
+        axios({
+            // Endpoint to send files
+            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
+            method: "POST",
+            headers: config2,
+            data: formData,
+        })
+        .then(response => {
+            childClicked2(props.monitor_seleccionado)
+        })
+        .catch(error => {
+            console.log("siii")
+        });
     }
 
     const quitar_usuario_monitor = (e) =>{
@@ -24,20 +61,21 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.practicante_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
       axios({
       // Endpoint to send files
-      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
         console.log(res)
         childClicked(props.practicante_seleccionado)
-            alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{
-            alert("error al eliminar el usuario : "+props.item.id+" del practicante : "+props.practicante_seleccionado);
+            console.log("sdafw")
         })
 
     }
@@ -47,19 +85,20 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.profesional_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
       axios({
       // Endpoint to send files
-      url: 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
         console.log(res)
-            alert("practicante "+props.item.id+" fue eliminado correctamente de :"+props.profesional_seleccionado)
         })
         .catch(err=>{
-            alert("error al eliminar el usuario : "+props.item.id);
+            console.log("sdara")
         })
 
     }
@@ -70,7 +109,7 @@ const Listas = (props) => {
             {
                 props.profesional_seleccionado === '' ?
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
+                <Col onClick={()=>childClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
@@ -86,12 +125,12 @@ const Listas = (props) => {
                 )
                 :
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
+                <Col  onClick={()=>childClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col xs={"2"} md={"2"}  className="center_asignacion"> 
-                        <button onClick={()=>quitar_usuario()} className="asignaciones_icons_quitar">
-                        <i class="bi bi-x"></i>                                                    
-                        </button>
+                            <button onClick={()=>quitar_usuario()} className="asignaciones_icons_quitar">
+                                <i class="bi bi-x"></i>                                                    
+                            </button>
                         </Col>
 
                         <Col  xs={"10"} md={"8"}> 
@@ -116,7 +155,7 @@ const Listas = (props) => {
                 )
             }
                     
-            </Row>
+            </Row> 
         )
     }else if(props.rol === "monitor") {
         return (
@@ -124,7 +163,7 @@ const Listas = (props) => {
             {
                 props.practicante_seleccionado === '' ?
                 (
-                <Col className= "listas_cuerpo" onClick={()=>childClicked2(props.item.id)}>
+                <Col onClick={()=>childClicked2(props.item.id)}>
                     <Row className="asignaciones_hover1">
 
                         <Col  xs={"10"} md={"4"}> 
@@ -143,7 +182,7 @@ const Listas = (props) => {
                 )
                 :
                 (
-                    <Col className= "listas_cuerpo" onClick={()=>childClicked2(props.item.id)}>
+                    <Col onClick={()=>childClicked2(props.item.id)}>
                         <Row className="asignaciones_hover1">
                             <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
                                 <button onClick={()=>quitar_usuario_monitor()} className="asignaciones_icons_quitar">
@@ -182,7 +221,7 @@ const Listas = (props) => {
         {
                 props.monitor_seleccionado === '' ?
                 (
-            <Col className="listas_cuerpo" >
+            <Col >
                 <Row className="asignaciones_hover1">
                     <Col  xs={"10"} md={"8"}> 
                         <Row className="nombres_asignacion">
@@ -198,10 +237,10 @@ const Listas = (props) => {
             )
             :
             (
-                <Col className="listas_cuerpo" >
+                <Col >
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                            <button onClick={()=>quitar_estudiante()} className="asignaciones_icons_quitar">
+                            <button onClick={handleShow} className="asignaciones_icons_quitar">
                                 <i class="bi bi-x"></i>                                                    
                             </button>
                         </Col>
@@ -228,43 +267,60 @@ const Listas = (props) => {
             </Col>
             )
             }
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> 
+                        Seleccione accion : 
+                        <br/><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button>
+                        <br/>
+                        <Button onClick={handleShow2} >Retirar estudiante</Button>
+                    </Modal.Body>                    
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show2} onHide={handleClose2}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Retiros</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> 
+                        Causa del retiro : <textarea></textarea>
+                        <br/>
+                        
+
+                    </Modal.Body>                    
+                    <Modal.Footer>
+                        <Button onClick={handleShow3} >aceptar</Button>
+                        <Button variant="secondary" onClick={handleClose2}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show3} onHide={handleClose3}>
+                    <Modal.Header closeButton>
+                        <Modal.Title></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> 
+                        Causa de retiro agregada correctamente
+                    </Modal.Body>                    
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => {handleClose3();handleClose2();handleClose();quitar_estudiante()}}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
         </Row>
         )
     }
     
-    
+
     
 }
 
 export default Listas
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

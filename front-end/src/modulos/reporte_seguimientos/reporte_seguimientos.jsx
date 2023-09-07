@@ -14,18 +14,27 @@ import axios from 'axios';
 
 const Reporte_seguimientos = (props) =>{
 
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const [state,set_state] = useState({
         periodo : '',
         data_user : [],
 
       })
-    const userRole = sessionStorage.getItem('rol');
+
+    const userRole = sessionStorage.getItem('permisos');
+
     useEffect(()=>{
-  
+      
+      if (sessionStorage.getItem('rol') === 'super_ases' || sessionStorage.getItem('rol') === 'socioeducativo'|| sessionStorage.getItem('rol') === 'socioeducativo_reg' )
+      {
         axios({
           // Endpoint to send files
-          url:  "https://sistemaasesback.onrender.com/usuario_rol/profesional/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({
@@ -37,17 +46,60 @@ const Reporte_seguimientos = (props) =>{
         .catch(err=>{
           console.log("error" + err)
         })
-  
+      }
+      else if (sessionStorage.getItem('rol') === 'profesional')
+      {
+        axios({
+          // Endpoint to send files
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+sessionStorage.getItem('sede_id')+"/",
+          method: "GET",
+          headers: config,
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+          console.log("error" + err)
+        })
+
+      }
+      else if (sessionStorage.getItem('rol') === 'practicante')
+      {
+        axios({
+          // Endpoint to send files
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
+          method: "GET",
+          headers: config,
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+          console.log("error" + err)
+        })
+      }
+
   
       },[]);
+
+
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{userRole.includes('view_reporte_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
-                <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo} data_user={state.data_user}></Cabecera>
+                <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>
         </Col> : <Acceso_denegado/>}</>
     )

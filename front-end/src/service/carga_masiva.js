@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-const url_carga = "https://sistemaasesback.onrender.com/carga_masiva"
+const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva`;
 
 const carga_masiva = (file,option) => {
     let formData = new FormData();
+    const config = {
+      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
   
     //Adding files to the formdata
     formData.append("tipo_de_carga", option);
@@ -14,6 +17,7 @@ const carga_masiva = (file,option) => {
       // Endpoint to send files
       url: url_carga,
       method: "POST",
+      headers: config,
       // Attaching the form data
       data: formData,
     })

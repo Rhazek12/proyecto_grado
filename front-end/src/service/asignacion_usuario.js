@@ -1,10 +1,14 @@
 import axios from 'axios';
 
 const asignacion_usuario = (formData) => {
-    const url_axios = 'https://sistemaasesback.onrender.com/asignacion/asignacion_usuario/';
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+    const url_axios = `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`;
     axios({
         url:  url_axios,
         method: "POST",
+        headers: config,
         data: formData,
         // {
         //     "llamada":"asignar",

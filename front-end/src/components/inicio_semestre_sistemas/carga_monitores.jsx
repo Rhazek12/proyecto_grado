@@ -13,10 +13,15 @@ import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import DataTable from 'react-data-table-component';
 
-const carga_masiva_component = () =>{
+const Carga_masiva_component = () =>{
+
+  // constante para el header del axios
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
   // Constante que guarda la dirección url utilizada por el axios
-  const url_carga = "https://sistemaasesback.onrender.com/carga_masiva/carga/"
+  const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   // Estado que permite guardar la respuesta del axios
   const [state,set_state] = useState({
     option : 'Usuario',
@@ -66,6 +71,7 @@ const carga_masiva_component = () =>{
       url: url_carga,
       method: "POST",
       data: formData,
+      headers: config,
     })
     .then((res)=>{
       set_state({
@@ -137,4 +143,4 @@ const carga_masiva_component = () =>{
   )
 }
 
-export default carga_masiva_component
+export default Carga_masiva_component

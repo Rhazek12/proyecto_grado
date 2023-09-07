@@ -11,7 +11,7 @@ import React, {useState, useEffect} from 'react';
 import {Container, Row, Table} from "react-bootstrap";
 import All_Users_Rols from '../../service/all_users_rol';
 
-const semestre_sistemas_component = () =>{
+const Semestre_sistemas_component = () =>{
 
     // Constante para guardar el estado de la tabla
     const [state,set_state] = useState({
@@ -20,7 +20,10 @@ const semestre_sistemas_component = () =>{
 
     useEffect(()=>{
         //Trae todos los usuarios con rol del semestre
-        All_Users_Rols.all_users_rols().then((res) => {
+        let formData = new FormData();
+        formData.append('id_sede', sessionStorage.getItem('sede_id'));
+        All_Users_Rols.all_users_rols(formData).then((res) => {
+            if(res != undefined)
             set_state({
                 ...state,
                 data: res
@@ -42,7 +45,7 @@ const semestre_sistemas_component = () =>{
                         </tr>
                     </thead>
                     <tbody>
-                        {state.data.map((e)=>(
+                        {state.data.length > 0 ? ( state.data.map((e)=>(
                             <tr>
                                 <td>{e.username}</td>
                                 <td>{e.first_name}</td>
@@ -50,7 +53,11 @@ const semestre_sistemas_component = () =>{
                                 <td>{e.email}</td>
                                 <td>{e.nombre}</td>
                             </tr>
-                        ))}
+                        ))) : (
+                            <tr>
+                              <td colSpan="6">No hay datos disponibles.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
             </Row>
@@ -58,4 +65,4 @@ const semestre_sistemas_component = () =>{
     )
 }
 
-export default semestre_sistemas_component
+export default Semestre_sistemas_component

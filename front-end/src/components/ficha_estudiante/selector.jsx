@@ -11,6 +11,10 @@ import axios from 'axios';
 
 const Selector = (props) =>{
 
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -59,11 +63,12 @@ const Selector = (props) =>{
 
       const loadInfo = (e) => {
 
-        const url_axios = "https://sistemaasesback.onrender.com/seguimiento/seguimientos_estudiante/"+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.id+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
             method: "GET",
+            headers: config,
             })
             .then((respuesta)=>{
             state.data_user_socioedu.push(respuesta.data)
@@ -80,18 +85,22 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 
                         datos={props.datos} 
                         rolUsuario={props.rolUsuario} 
                         editar={props.editar} 
-                        codigo={props.codigo}/>,
+                        codigo={props.codigo}
+                        handleOptionUser={props.handleOptionUser}
+                        />,
         },
         {
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Socieducativa 
                         id={props.id} 
                         data_user_socioedu={state.data_user_socioedu} 
@@ -103,13 +112,15 @@ const Selector = (props) =>{
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Academico data_user_academico={state.data_user_academico}
                         id={props.id}/>,
         },
         {
             id:4,
             name:"GEOGRAFICO",
-            contenido:"hola",
+            contenido:"bloqueado",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general />,
         },
 
@@ -119,62 +130,64 @@ const Selector = (props) =>{
 
     return (
         <Container className="containerSelector">
-                {
-                    props.seleccionado ==='' ?
-                    (
-                        <Row className="tabs" >
+                
+                <Row className="tabs" >
+                    {
+                        tabs.map((tab, index)=>(
+
+                            <Col xs={12}>
+                            {
+                                ( props.seleccionado !== '' && tab.contenido !== 'bloqueado' && tab.permitidos.includes(sessionStorage.getItem('rol')) ) ?
+
+                                (<Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                    <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
+                                        <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
                                     {
-                                    tabs.map((tab, index)=>(
-                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
-                                            <Row onClick={handleShow}>
-                                                <label key={index}>
-                                                    {tab.name}
-                                                </label>
-                                            </Row>
-                                        </Row>
-                                        ))
+                                        (tab.id === activeTabIndex)?
+                                        (
+                                        <Row>
+                                            
+                                            <Col className="contentTab" xs={"12"} md={"12"}>{tabs[activeTabIndex-1].component}</Col>
+
+                                        </Row>)
+                                        :
+                                        (<Row></Row>)
                                     }
-                                </Row>
-                    )
-                    :
-                    (
-                        <Row className="tabs" >
-                                    {
-                                    tabs.map((tab, index)=>(
-                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                            <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
-                                                <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                                    {tab.name}
-                                                </label>
-                                            </Row>
-                                            {
-                                                (tab.id === activeTabIndex)?
-                                                (
-                                                <Row>
-                                                    <div class="d-none d-md-block col-md-1">
-                                                        <Col md={"1"}></Col>
-                                                    </div>
-                                                    <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                                    <div class="d-none d-md-block col-md-1">
-                                                        <Col md={"1"}></Col>
-                                                    </div>
-        
-                                                </Row>)
-                                                :
-                                                (<Row></Row>)
-                                            }
-                                        </Col>
-                                        ))
-                                    }
-                                </Row>
-                    )
-                }
+                                </Col>)
+                                :
+                                (<Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
+                                    <Row onClick={handleShow}>
+                                        <label key={index}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
+                                </Row>)
+                            }
+                            </Col>
+                        ))
+                    }
+                </Row>
+
+
+
+
+
+
+
+                
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                     <Modal.Title>Importante</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                    {props.seleccionado === '' ?
+                    (<Modal.Body>Seleccione un estudiante.</Modal.Body>)
+                    :
+                    (<Modal.Body>Opción bloqueada.</Modal.Body>)
+                    }
                     <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close

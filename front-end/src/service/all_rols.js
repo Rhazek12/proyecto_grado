@@ -2,19 +2,16 @@ import axios from 'axios';
 
 const all_rols = async () => {
     try {
-        const url_axios = 'https://sistemaasesback.onrender.com/usuario_rol/rol/';
-        const resRol = await axios.get(url_axios 
-        //     {
-        //         headers: {
-        //         Authorization: 'Bearer ' + sessionStorage.getItem('token')
-        //         }
-        //    }
-        )
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+        };
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/rol/`;
+        const resRol = await axios.get(url_axios, config)
         return resRol.data;
         
     } catch (error) {
-    //     const resRol = {'data': 'error'}
-    //     return(resRol.data);
         console.log(error);
     }
 }

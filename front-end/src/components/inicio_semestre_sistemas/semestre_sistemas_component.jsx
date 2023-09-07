@@ -22,7 +22,17 @@ var datos_option_rol = [];
 // variable bandera para saber si ya se solicitaron los roles del back.
 var bandera_option_rol = true;
 
-const semestre_sistemas_component = () =>{
+const Semestre_sistemas_component = () =>{
+
+    // constante para el headers del axios
+    const config = {
+        headers: {
+              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
+    //Manejar la disponibilidad del boton
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     //Constante para guardar el estado actual de la tabla de usuario y el form del usuario a agregar.
     const [state,set_state] = useState({
@@ -110,7 +120,7 @@ const semestre_sistemas_component = () =>{
     useEffect(()=>{
         // Trae todos los roles y los guarda en la variable asignada.
         All_Rols.all_rols().then((res) => {
-            if(bandera_option_rol){
+            if(bandera_option_rol && res != undefined){
                 for (var i = 0; i < res.length ; i++) {
                     const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
                     datos_option_rol.push(dato);
@@ -120,6 +130,7 @@ const semestre_sistemas_component = () =>{
         })
         // Trae todos los usuario con rol y los guarda en la tabla.
         All_Users_Rols.all_users_rols().then((res) => {
+            if (res != undefined)
             set_state({
                 ...state,
                 data: res
@@ -165,21 +176,31 @@ const semestre_sistemas_component = () =>{
         * @param {Event} e Evento del usuario de la tabla seleccionado para eliminar.
     */
     const handleCreate = () => {
-        for(var i = 0; i < state.data['length']; i++){
-            if(state.data[i].id === undefined){
-                axios.get('https://sistemaasesback.onrender.com/usuario_rol/user/')
-                .then(res=>{
-                    for(var j=0; j<res.data['length']; j++){
-                        if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){
-                            state.data[i].id=res.data[j]['id'];
-                        }
+        try{
+            if(state.data['length']>0){
+                for(var i = 0; i < state.data['length']; i++){
+                    if(state.data[i].id === undefined){
+                        axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/user/`, config)
+                        .then(res=>{
+                            for(var j=0; j<res.data['length']; j++){
+                                if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){
+                                    state.data[i].id=res.data[j]['id'];
+                                }
+                            }
+                        })
                     }
-                })
+                    let formData = new FormData();
+                    formData.append('id_rol', state.data[i].id_rol);
+                    formData.append('id_usuario', state.data[i].id);
+                    user_rol.user_rol(formData);
+                }
+                setIsButtonDisabled(true);
+            } else {
+                window.alert('No hay usuarios para crear');
             }
-            let formData = new FormData();
-            formData.append('id_rol', state.data[i].id_rol);
-            formData.append('id_usuario', state.data[i].id);
-            user_rol.user_rol(formData);
+        }
+        catch{
+
         }
     }
 
@@ -231,7 +252,8 @@ const semestre_sistemas_component = () =>{
                         </tr>
                     </thead>
                     <tbody>
-                        {state.data.map((e)=>(
+                        {state.data.length > 0 ? (
+                            state.data.map((e)=>(
                             <tr>
                                 <td>{e.username}</td>
                                 <td>{e.first_name}</td>
@@ -244,13 +266,17 @@ const semestre_sistemas_component = () =>{
                                     <Button variant="danger" onClick={() => handleClick(e)}>Eliminar</Button>
                                 </td>
                             </tr>
-                        ))}
+                        ))) : (
+                            <tr>
+                                <td colSpan="6">No hay datos disponibles.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
-                <Button variant="primary" onClick={handleCreate}>Crear usuarios</Button>
+                <Button variant="primary" onClick={handleCreate} disabled={isButtonDisabled}>Crear usuarios</Button>
             </Row>
         </Container>
     )
 }
 
-export default semestre_sistemas_component
+export default Semestre_sistemas_component

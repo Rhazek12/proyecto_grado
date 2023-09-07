@@ -14,7 +14,11 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_monitor = (props) =>{
 
-    const userRole = sessionStorage.getItem('rol');
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
+    const userRole = sessionStorage.getItem('permisos');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -26,8 +30,9 @@ const Ficha_monitor = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  "https://sistemaasesback.onrender.com/usuario_rol/monitor/",
+            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
             method: "GET",
+            headers: config,
           })
           .then((respuesta)=>{
             set_state({
@@ -42,7 +47,7 @@ const Ficha_monitor = (props) =>{
       }, []);
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{userRole.includes('view_ficha_monitores') ? <Col className="contenido_children">
             <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} 
                                 area={props.area} periodo={props.periodo} data_user={state.data_user}/>
         </Col> : <Acceso_denegado/>}</>

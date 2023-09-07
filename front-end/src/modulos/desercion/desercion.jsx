@@ -14,7 +14,11 @@ import axios from 'axios';
 
 const Desercion = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
+    const userRole = sessionStorage.getItem('permisos');
 
     const [state,set_state] = useState({
         periodo : '',
@@ -32,8 +36,9 @@ const Desercion = () =>{
 
         axios({
           // Endpoint to send files
-          url:  "https://sistemaasesback.onrender.com/usuario_rol/cohorte_estudiante_info/"+state.id_cohorte+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/`+state.id_cohorte+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({
@@ -46,7 +51,7 @@ const Desercion = () =>{
         })
       },[]);
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_reporte_desercion') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_desercion data_cohorte={state.data_cohorte}/>
             </Row>

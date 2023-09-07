@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col} from "styled-bootstrap-grid";
-import {Dropdown, Button} from "react-bootstrap";
+import {Row, Col} from "styled-bootstrap-grid";
+import {Button, ListGroupItem} from "react-bootstrap";
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import {useEffect} from 'react';
 import axios from 'axios';
@@ -11,13 +10,72 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useLocation, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { differenceInYears } from 'date-fns';
+import { parseISO } from 'date-fns';
+import Modal from 'react-bootstrap/Modal';
+import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
 
-    //ids de los tabs para cuando lo s requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
+  const config2 = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
+
+  
+    const [loading, setLoading2] = useState(false);
+    const [fechas, setFechas] = useState([]);
+    const [riesgos, setRiesgos] = useState({});
+
+    const traer_graficos = () => {
+      setLoading2(true);
+    
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/')
+        .then((response) => {
+          setFechas(response.data[0].fechas);
+          const riesgos = response.data.slice(1);
+          const riesgosObj = {};
+    
+          riesgos.forEach((riesgo) => {
+            const [key] = Object.keys(riesgo);
+            const [values] = Object.values(riesgo);
+            riesgosObj[key] = values;
+          });
+    
+          setRiesgos(riesgosObj);
+        })
+        .catch((error) => {
+          console.error('Error al obtener los riesgos:', error);
+        })
+        .finally(() => {
+          setLoading2(false);
+          handleShow();
+        });
+    };
+    
+
+
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+    //ids de los tabs para cuando los requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
        
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -26,12 +84,18 @@ const Info_basica = (props) =>{
     const handleModal = () => setShow(true);
     const handleClose = () => setShow(false);
 
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow = () => setShow2(true);
+
     const [showIn, setShowIn] = useState(false);
     const handleModalIn = () => setShowIn(true);
     const handleCloseIn = () => setShowIn(false);
 
     const datos_option_user = []
     const [isLoading, setIsLoading] = useState(true);
+
+    const userRole = sessionStorage.getItem('rol');
 
     var bandera_option_user = true;
     const [state,set_state] = useState({
@@ -58,6 +122,7 @@ const Info_basica = (props) =>{
       monitor : [],
       practicante : [],
       profesional : [],
+      nombre_cohorte : '',
 
       nueva_cedula:'',
       edad:'',
@@ -77,11 +142,11 @@ const Info_basica = (props) =>{
           tipo_doc : state.total_datos_estudiantes['tipo_doc'],
           cedula :state.total_datos_estudiantes['num_doc'],
           telefono :state.total_datos_estudiantes['telefono_res'],
-          edad : '1',
           programas : state.total_datos_estudiantes['programas'],
           monitor : state.total_datos_estudiantes['info_monitor'],
           practicante : state.total_datos_estudiantes['practicante'],
           profesional : state.total_datos_estudiantes['profesional'],
+          nombre_cohorte : state.total_datos_estudiantes['nombre_cohorte'],
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
       }
@@ -102,7 +167,7 @@ const Info_basica = (props) =>{
     }, [props.data_user]);
 
 
-    const [url, setUrl] = useState('');
+    const [url_estudiante, setUrl] = useState('');
 
 
     useEffect(() => {
@@ -114,7 +179,7 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get("https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
         state.total_datos_estudiantes.push(response.data)
         console.log("entra aqui ssisisisiisj")
       }
@@ -130,7 +195,7 @@ const Info_basica = (props) =>{
 
     const handle_users = (e) => {
       // Getting the files from the input
-      if(bandera_option_user==true){
+      if(bandera_option_user === true){
   
         for (var i = 0; i < props.data_user['length'] ; i++) {
           const dato = 
@@ -138,16 +203,17 @@ const Info_basica = (props) =>{
           label:props.data_user[i]['cod_univalle']+" "+props.data_user[i]['nombre']+" "+props.data_user[i]['apellido'],
           id:i }
           datos_option_user.push(dato)
+          //alert(dato.value+' '+url_estudiante+' '+state.ya_selecciono_automatico)
 
           //este if lo pongo para que abra academico de una
-          if (url == dato.value && state.ya_selecciono_automatico){
+          if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
-            
-            const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+dato.value+"/";
+            const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+dato.value+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config2,
             })
             .then((respuesta)=>{
               set_state({
@@ -172,26 +238,40 @@ const Info_basica = (props) =>{
 
 
     const handle_option_user = (e) => {
-      // Getting the files from the input
-
-      const url_axios = "https://sistemaasesback.onrender.com/usuario_rol/estudiante/"+e.value+"/";
+      sessionStorage.setItem('id_estudiante_seleccionado', e.value)
+      const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
-        // Endpoint to send files
-        url:  url_axios,
+        url: url_axios,
         method: "GET",
+        headers: config2,
       })
-      .then((respuesta)=>{
-        set_state({
-          ...state,
-          total_datos_estudiantes : respuesta.data
+        .then((respuesta) => {
+          const json = respuesta.data;
+    
+          // Obtener la fecha de nacimiento del JSON
+          const fechaNacimiento = parseISO(json.fecha_nac);
+    
+          // Obtener la fecha actual
+          const fechaActual = new Date();
+    
+          // Calcular la diferencia de años entre la fecha actual y la fecha de nacimiento
+          const edad = differenceInYears(fechaActual, fechaNacimiento);
+    
+          // Actualizar el estado con los datos y la edad calculada
+          set_state({
+            ...state,
+            total_datos_estudiantes: {
+              ...json,
+            },
+            edad: edad
+          });
         })
-      })
-      .catch(err=>{
-          console.log("no tomo el dato 174 de basica" + err)
-        })
-
-        setSelectedOption(e)
-    }
+        .catch((err) => {
+          console.log("Error al obtener el dato del estudiante: " + err);
+        });
+    
+      setSelectedOption(e);
+    };
 
 
     const handleWhatsapp = (e) =>{
@@ -207,6 +287,11 @@ const Info_basica = (props) =>{
       <Row className="row_prueba">
         <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
         <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+        {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
+          <GraphComponent fechas={fechas} riesgos={riesgos} />
+        )} */}
+        {/*<li >{JSON.stringify(state.total_datos_estudiantes)}</li>*/} 
+
         <Col xs={"12"} lg={"9"} >
 
           <div class="d-none d-md-block">
@@ -288,6 +373,11 @@ const Info_basica = (props) =>{
                                             Programas académicos 
                                           </h4>
                                         </Row>
+                                        <Row>
+                                          <label className='info_programa_academico_egresado'>Egresado</label>
+                                          <label className='info_programa_academico_en_curso'>En curso</label>
+                                          <label className='info_programa_academico_desertor'>Desertor</label>
+                                        </Row>
                                         <Row className="infoRow23_inactivo"> 
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">
@@ -315,14 +405,14 @@ const Info_basica = (props) =>{
 
                                       <div class="d-none d-md-block col-md-3">
                                       <Col xs={"12"} md={"12"} className="col_2017">
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica" >
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condición de excepcion <br/>2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">{state.nombre_cohorte} <br/></h4>
                                           </Row>
                                         </Col> 
                                       </div>
@@ -334,6 +424,11 @@ const Info_basica = (props) =>{
                                       <Col md={"9"}>
                                         <Row>
                                           <h4 className="texto_pequeño">Programas académicos </h4>
+                                        </Row>
+                                        <Row>
+                                          <label className='info_programa_academico_egresado'>Egresado</label>
+                                          <label className='info_programa_academico_en_curso'>En curso</label>
+                                          <label className='info_programa_academico_desertor'>Desertor</label>
                                         </Row>
                                           { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
@@ -365,7 +460,7 @@ const Info_basica = (props) =>{
 
                                       <div class="d-none d-md-block col-md-3">
                                         <Col xs={"12"} md={"12"} className="col_2017">
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica"  onClick={traer_graficos}>
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica">
@@ -373,9 +468,9 @@ const Info_basica = (props) =>{
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
-                                            Condición de excepcion 
+                                            {state.nombre_cohorte} 
                                               <br/>
-                                              2017-C.A
+                                              
                                             </h4>
                                           </Row>
                                         </Col>  
@@ -441,10 +536,10 @@ const Info_basica = (props) =>{
                                   </Row>
                                   <Row className="texto_estatico_pequeño">
                                     <h4 className="texto_mas_pequeño">Condición de excepción</h4>
-                                      <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                      <h4 className="texto_mas_pequeño"></h4>
                                   </Row>
                                       <Row className="botones_info_basica_pequeña">
-                                    <button className="boton_editar_info_basica">
+                                    <button className="boton_editar_info_basica" onClick={traer_graficos}>
                                       <i>TRAYECTORIA</i>
                                     </button>
                                   </Row>
@@ -475,10 +570,10 @@ const Info_basica = (props) =>{
                                 </Row>
                                 <Row className="texto_estatico_pequeño">
                                   <h4 className="texto_mas_pequeño">Condición de excepción</h4>
-                                  <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                  <h4 className="texto_mas_pequeño"></h4>
                                 </Row>
                                   <Row className="botones_info_basica_pequeña">
-                                <button className="boton_editar_info_basica">
+                                <button className="boton_editar_info_basica" onClick={traer_graficos}>
                                   <i>TRAYECTORIA</i>
                                 </button>
                                 </Row>
@@ -553,22 +648,6 @@ const Info_basica = (props) =>{
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">{state.codigo} </h4>
                                           </Col>
-                                          {
-                                            props.rolUsuario==='superSistemas' ?
-                                            (
-                                              <Col xs={"3"} md={"2"}>
-                                                <Switch onClick={handleChange}/>
-                                              </Col>
-                                            )
-                                            :
-                                            (
-                                              <Col xs={"1"} md={"1"}>
-                                              </Col>
-                                            )
-                                          }
-                                          <Col xs={"3"} md={"4"}> 
-                                            <select/>
-                                          </Col>
                                         </Row>
                                       </Col>
                                     </Row>
@@ -603,7 +682,8 @@ const Info_basica = (props) =>{
         <div class="d-none d-md-block col-12">
           <Row>
             <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                      handleOptionUser={handle_option_user}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
@@ -622,12 +702,28 @@ const Info_basica = (props) =>{
         <div class="d-block d-md-none col-12">
           <Col>
           <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
+                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                    handleOptionUser={handle_option_user}/>
           </Col>
         </div>
       
-        
 
+
+        <Modal show={show2} onHide={handleClose2} size={'lg'}>
+          <Modal.Header closeButton>
+            <Modal.Title>Importante</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
+              <GraphComponent fechas={fechas} riesgos={riesgos} />
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose2}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
       </Row>
     )
