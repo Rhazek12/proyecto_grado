@@ -51,8 +51,8 @@ const Cabecera = () => {
   useEffect(() => {
     const currentUrl = window.location.href;
     const urlParts = currentUrl.split('/');
-    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
     const cursoParam = urlParts[4]; // Obtiene el valor del curso
+    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
     const codParam = urlParts[6]; // Obtiene el valor del curso
     const franjaParam = urlParts[7]; // Obtiene el valor del curso
 

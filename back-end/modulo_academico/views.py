@@ -244,7 +244,7 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
         curso_param = request.GET.get('curso')
         franja_param = request.GET.get('franja')
 
-        profesores_ids = list(materia.objects.filter(cod_materia=curso_param).values('id_profesor', 'id'))
+        profesores_ids = list(materia.objects.filter(cod_materia=curso_param, franja=franja_param).values('id_profesor', 'id'))
 
         for i in profesores_ids:
             profesor_id = i['id_profesor']
