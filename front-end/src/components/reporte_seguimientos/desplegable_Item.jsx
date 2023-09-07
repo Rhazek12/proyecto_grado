@@ -23,6 +23,9 @@ const Desplegable_item = ({item}) => {
 
 
     const traer_reportes = (e) => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+        };
 
 
             set_state({
@@ -34,6 +37,7 @@ const Desplegable_item = ({item}) => {
             axios({
             // Endpoint to send files
             url:  url_axios,
+            params : paramsget,
             method: "GET",
             headers: config,
             })

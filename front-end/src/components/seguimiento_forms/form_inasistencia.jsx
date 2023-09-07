@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Col, Row } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
+import { CSVLink } from 'react-csv';
 
 const Inasistencia = (props) => {
-    const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
-
-
+    const id_estudiantecons = props.estudiante_seleccionado
     const [state, set_state] = useState({
         fecha: null,
         observaciones: "",
@@ -14,15 +13,8 @@ const Inasistencia = (props) => {
         revisado_practicante: false,
         id_creador: parseInt(sessionStorage.getItem("id_usuario")),
         id_modificador: null,
-        id_estudiante: !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null
-    });
-    useEffect(()=>{
-        set_state({
-            ...state,
-            id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
 
-        })
-    }, [state.fecha]);
+    });
 
 
 
@@ -34,24 +26,26 @@ const Inasistencia = (props) => {
     };
 
 
-
+    useEffect(() => {
+        set_state(prevState => ({
+            ...prevState,
+            id_estudiante: id_estudiantecons,
+        }))
+    },[state])
 
 
 
     const set_info = async () => {
-        const idEstudiante = !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null;
 
         // Llamada a la función set_state para actualizar el estado
-        set_state(prevState => ({
-            ...prevState,
-            id_estudiante: idEstudiante
-        }));
+        
 
 
         // Llamada a la función Create_Inasistencia.create_inasistencia solo cuando se hace clic en el botón Registrar
         try {
             const res = await Create_Inasistencia.create_inasistencia(state);
             if (res) {
+                recargarPagina();
                 props.handleCloseIn();
             } else {
                 window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.");
@@ -104,10 +98,16 @@ const Inasistencia = (props) => {
                 <br/>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
-                    Registrar
-                </Button>
-                <Button variant="secondary" onClick={() => { props.handleCloseIn(); recargarPagina(); }}>
+                <CSVLink
+                    data={[state]}
+                    filename={"Inasistencia Individual " + state.fecha}
+                >   
+                    <Button variant="secondary" onClick={() => {set_info()}}>
+                        Registrar
+                    </Button>
+                </CSVLink>
+                
+                <Button variant="secondary" onClick={() => { props.handleCloseIn() }}>
                     Cerrar
                 </Button>
 

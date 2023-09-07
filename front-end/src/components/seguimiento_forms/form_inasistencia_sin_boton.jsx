@@ -30,13 +30,14 @@ const Inasistencia = (props) =>{
         revisado_practicante: props.item.revisado_practicante,
         id_creador: props.item.id_creador,
         id_modificador: parseInt(sessionStorage.getItem("id_usuario")),
-        id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+        id_estudiante: props.item.id_estudiante
     })
 
     const set_info = (e) => {
         Update_Inasistencia.Update_inasistencia(form).then(res=>{
             if(res){
                 props.handleCloseIn()
+                recargarPagina()
             } else {
                 window.alert("Hubo un error al momento de actualizar la inasistencia, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
@@ -48,6 +49,7 @@ const Inasistencia = (props) =>{
             Delete_inasistencia.Delete_inasistencia(form.id).then(res=>{
                 if(res){
                     props.handleCloseIn()
+                    recargarPagina()
                 } else {
                     window.alert("Hubo un error al momento de eliminar la inasistencia.")
                 }
@@ -127,10 +129,10 @@ const Inasistencia = (props) =>{
 
 
 
-            <Button variant="danger" onClick={() => { delete_info(); recargarPagina(); }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+            <Button variant="danger" onClick={() => { delete_info() }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
-            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+            <Button variant="secondary" onClick={() => { set_info() }}>
                 Aceptar cambios
             </Button>
             <Button variant="secondary" onClick={() => { props.handleCloseIn() }}>
