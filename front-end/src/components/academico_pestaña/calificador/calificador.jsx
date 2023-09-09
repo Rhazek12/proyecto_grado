@@ -235,7 +235,7 @@ const handleDeleteItem = async () => {
 
 
   return (
-    <Container>
+    <Container className="container_academico_para_footer">
       <Row>
         <Col xs={'12'} md={'8'} className="texto_titulo_bold">
           {curso_datos_generales.nombre}

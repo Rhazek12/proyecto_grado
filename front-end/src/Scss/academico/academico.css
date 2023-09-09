@@ -3,6 +3,10 @@
     background: white;
 }
 
+.container_academico_para_footer{
+    margin-bottom: 50px;
+}
+
 .academico_seguimientos_pares{
     background: #f5f5f5;
     padding-left: 10px;
