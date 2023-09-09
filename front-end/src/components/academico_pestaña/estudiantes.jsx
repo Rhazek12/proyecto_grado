@@ -114,7 +114,7 @@ const Estudiantes = ({item}) => {
                 <Row className="link_academico1" onClick={() => {setOpen(!open); traer_cursos_del_estudiante(item.id)}}>
                     <Col className="link_text_academico1" >
                         <Row className="link_text_academico_hover3">
-                            {item.nombre} {item.apellido} - {item.cod_univalle}
+                            <a><Link to={`/ficha_estudiante/${item.id}`}>Ficha del estudiante </Link> : {item.nombre} {item.apellido} - {item.cod_univalle}</a>
                         </Row>
                     </Col>
                 </Row>
