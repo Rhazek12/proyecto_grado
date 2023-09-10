@@ -4,17 +4,26 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
 import Seguimiento_individual from '../../seguimiento_forms/form_seguimiento_individual_sin_boton';
+import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia_sin_boton';
 
-const Desplegable_item = ({item}) => {
+const Desplegable_item = ({item, updateDataUserSocioedu}) => {
 
-    const [open, setOpen] = useState(false)
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    console.log("item datos : "+item.datos)
+
+    const [show2, setShow2] = useState(false);
+    const handleCloseIn = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
 
     const userRole = sessionStorage.getItem('rol');
+
+    
+      const enviar_datos = (e) => {
+        // Actualiza state.data_user_socioedu con los nuevos datos
+                updateDataUserSocioedu(e);
+      };
 
     if(item.nombre){
         return (
@@ -31,15 +40,30 @@ const Desplegable_item = ({item}) => {
         return (
             <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row>
+
                 <Col className="col_reportes" >
                     <Row className="col_reportes_hover">
+                    {
+                        item.hora_inicio ?
+                        (
                         <Col onClick={handleShow}>
-                            {item.fecha}
+                            Seguimiento individual : {item.fecha}
                         </Col>
+                        )
+                        :
+                        (
+                        <Col onClick={handleShow2}>
+                            Inasistencia : {item.fecha}
+                        </Col>
+                        )
+                    }
+
                     </Row>
                 </Col>
                 
-                <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
+                <Seguimiento_inasistencia recarga_ficha_estudiante={true} show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
+
+                <Seguimiento_individual recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
             </Row>
             }</>
         )

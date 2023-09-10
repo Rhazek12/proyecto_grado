@@ -19,6 +19,7 @@ import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
+
   const config = {
     headers: {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
@@ -29,7 +30,6 @@ const Info_basica = (props) =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-
   
     const [loading, setLoading2] = useState(false);
     const [fechas, setFechas] = useState([]);
@@ -37,9 +37,17 @@ const Info_basica = (props) =>{
 
     const traer_graficos = () => {
       setLoading2(true);
-    
-      axios
-        .get(`${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/')
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
+      const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            params : paramsget,
+            method: "GET",
+            headers: config2,
+            })
         .then((response) => {
           setFechas(response.data[0].fechas);
           const riesgos = response.data.slice(1);
@@ -97,9 +105,13 @@ const Info_basica = (props) =>{
 
     const userRole = sessionStorage.getItem('rol');
 
+
+
+
     var bandera_option_user = true;
     const [state,set_state] = useState({
 
+      actualizar:0,
       total_datos_estudiante_seleccionado:[],
       editar : false,
       usuario : '',
@@ -118,6 +130,7 @@ const Info_basica = (props) =>{
       cedula:'',
       correo:'',
       telefono:3122131542,
+      celular:0,
       ptogramas:[],
       monitor : [],
       practicante : [],
@@ -127,9 +140,8 @@ const Info_basica = (props) =>{
       nueva_cedula:'',
       edad:'',
     })
-
+    console.log("holi"+state.seleccionado)
     useEffect(() => {
-      console.log('entra al useeffct xd')
       if (state.total_datos_estudiantes['nombre'] && isLoading) {
         set_state({
           ...state,
@@ -142,6 +154,7 @@ const Info_basica = (props) =>{
           tipo_doc : state.total_datos_estudiantes['tipo_doc'],
           cedula :state.total_datos_estudiantes['num_doc'],
           telefono :state.total_datos_estudiantes['telefono_res'],
+          celular: state.total_datos_estudiantes['celular'],
           programas : state.total_datos_estudiantes['programas'],
           monitor : state.total_datos_estudiantes['info_monitor'],
           practicante : state.total_datos_estudiantes['practicante'],
@@ -150,9 +163,6 @@ const Info_basica = (props) =>{
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
       }
-      else{
-      console.log(state.total_datos_estudiantes.length)
-      }
 
     }, [state.total_datos_estudiantes]);
 
@@ -160,6 +170,13 @@ const Info_basica = (props) =>{
     const [selectedOption, setSelectedOption] = useState("");
 
     const { id } = useParams();
+
+      function nuevo_actualizar(name){
+        set_state({
+          ...state,
+          actualizar:state.actualizar+name
+        })
+      }
 
 
     useEffect(() => {
@@ -179,12 +196,13 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
+        const paramsget = {
+          id_sede: sessionStorage.getItem('sede_id'),
+        };
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config,{paramsget});
         state.total_datos_estudiantes.push(response.data)
-        console.log("entra aqui ssisisisiisj")
       }
       catch (error){
-        console.log("no capto el dato")
         fetchData(index);
       }
     }
@@ -208,10 +226,14 @@ const Info_basica = (props) =>{
           //este if lo pongo para que abra academico de una
           if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
+            const paramsget = {
+              id_sede: sessionStorage.getItem('sede_id'),
+            };
             const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+dato.value+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
+              params : paramsget,
               method: "GET",
               headers: config2,
             })
@@ -230,18 +252,19 @@ const Info_basica = (props) =>{
         }
         bandera_option_user = false;
       }
-      else{
-        console.log("bandera off");
-      }
 
     }
 
 
     const handle_option_user = (e) => {
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
       sessionStorage.setItem('id_estudiante_seleccionado', e.value)
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,
+        params: paramsget,
         method: "GET",
         headers: config2,
       })
@@ -256,7 +279,7 @@ const Info_basica = (props) =>{
     
           // Calcular la diferencia de años entre la fecha actual y la fecha de nacimiento
           const edad = differenceInYears(fechaActual, fechaNacimiento);
-    
+
           // Actualizar el estado con los datos y la edad calculada
           set_state({
             ...state,
@@ -275,18 +298,20 @@ const Info_basica = (props) =>{
 
 
     const handleWhatsapp = (e) =>{
-      if (state.telefono) {
-        const url = `https://api.whatsapp.com/send?phone=${state.telefono}`;
+      const celular_numerico = parseInt(state.celular)
+      if (celular_numerico) {
+        const url = `https://api.whatsapp.com/send?phone=${celular_numerico}`;
         window.open(url, "_blank");
       }
+      else{alert("problema con el celular_numerico")}
     }
 
 
 
     return (
       <Row className="row_prueba">
-        <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
-        <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+        <Seguimiento_individual estudiante_seleccionado={state.seleccionado} recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
+        <Inasistencia estudiante_seleccionado={state.seleccionado} recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
         {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
           <GraphComponent fechas={fechas} riesgos={riesgos} />
         )} */}
@@ -308,6 +333,7 @@ const Info_basica = (props) =>{
                         <Row className="rowJustFlex" >
                             <Col className="colInfo1" xs={"12"}>
                                 <Row className="infoRow1">
+                                
                                   <Col md={"12"}>
                                     {
                                       (state.seleccionado) === '' ?
@@ -315,7 +341,7 @@ const Info_basica = (props) =>{
                                         <Row className="info"> 
                                             <Col className="info_texto" xs={"5"} md={"3"}>
                                               <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                cédula
+                                                cédula 
                                               </h4>
                                             </Col>
                                             <Col className="info_texto" md={"5"}>
@@ -345,7 +371,7 @@ const Info_basica = (props) =>{
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"5"}>
                                             <h4 className="texto_mas_pequeño">
-                                              {state.correo}
+                                              <a href={`mailto:${state.correo}`}>{state.correo}</a>
                                             </h4>
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"2"}>
@@ -355,7 +381,7 @@ const Info_basica = (props) =>{
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"2"}>
                                             <h4 className="texto_mas_pequeño">
-                                              {state.telefono}
+                                              {state.celular}
                                             </h4>
                                           </Col>
                                         </Row>
@@ -384,9 +410,6 @@ const Info_basica = (props) =>{
                                               {state.codigo} 
                                             </h4>
                                           </Col>
-                                          <Col xs={"3"} md={"4"}> 
-                                            <select></select>
-                                          </Col>
                                         </Row>
                                         <Row> 
                                           <h4 className="texto_mas_pequeño">
@@ -409,7 +432,7 @@ const Info_basica = (props) =>{
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
-                                            <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                            <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">{state.nombre_cohorte} <br/></h4>
@@ -448,14 +471,6 @@ const Info_basica = (props) =>{
                                           </h4>
                                         </Row>
 
-                                        <Row>  
-                                          <h4 className="texto_mas_pequeño">
-                                            <br/> 
-                                            <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                                              Documento de Autorización de Tratamiento de Datos
-                                            </a>
-                                          </h4>
-                                        </Row>
                                       </Col>
 
                                       <div class="d-none d-md-block col-md-3">
@@ -463,8 +478,8 @@ const Info_basica = (props) =>{
                                           <button className="boton_editar_info_basica"  onClick={traer_graficos}>
                                             <i>TRAYECTORIA</i>
                                           </button> 
-                                          <button className="boton_editar_info_basica">
-                                            <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                          <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
+                                            <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
@@ -530,8 +545,8 @@ const Info_basica = (props) =>{
                             
                             <Col xs={"7"} sm={"4"}>
                                   <Row className="botones_info_basica_pequeña">
-                                    <button className="boton_editar_info_basica">
-                                      <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                    <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
+                                      <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                     </button>
                                   </Row>
                                   <Row className="texto_estatico_pequeño">
@@ -565,7 +580,7 @@ const Info_basica = (props) =>{
                             <Row className="botones_info_basica_pequeña">
 
                                 <button className="boton_editar_info_basica">
-                                  <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                  <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                 </button>
                                 </Row>
                                 <Row className="texto_estatico_pequeño">
@@ -609,7 +624,10 @@ const Info_basica = (props) =>{
                                 (
                                   <Row className="info_pequeño"> 
                                     <Col className="info_texto_pequeño" xs={"12"} md={"12"}>
-                                      <h4 className="texto_mas_pequeño">{state.correo}</h4>
+                                    
+                                      <h4 className="texto_mas_pequeño">
+                                        <a href={`mailto:${state.correo}`}>{state.correo}</a>
+                                      </h4>
                                     </Col>
                                     <Col  xs={"5"} sm={"1"} className="info_texto_cedula_pequeño">
                                       <h4 className="texto_mas_pequeño">{state.tipo_doc}
@@ -620,7 +638,7 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">{state.edad} años</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"2"}>
-                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
+                                      <h4 className="texto_mas_pequeño">{state.celular}</h4>
                                     </Col>
                                   </Row>
                                 )
@@ -682,12 +700,10 @@ const Info_basica = (props) =>{
         <div class="d-none d-md-block col-12">
           <Row>
             <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} 
                       handleOptionUser={handle_option_user}/>
           </Row>
-          <Row>
-            <Ficha_footer></Ficha_footer>
-          </Row>
+
         </div>
         </Col>
 
@@ -701,7 +717,7 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+          <Selector id={state.id_usuario} actualizar={state.actualizar} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
                     seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
                     handleOptionUser={handle_option_user}/>
           </Col>

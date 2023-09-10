@@ -44,7 +44,6 @@ const Academico_desplegable = () => {
       ...state,
       [e.target.name]: e.target.value
     });
-    console.log(e.target.value);
   };
 
   useEffect(() => {
@@ -68,7 +67,6 @@ const Academico_desplegable = () => {
       set_state({
         traer_materias_del_profesor: response.data,
       });
-      console.log('Facultades:', response.data);
     } catch (error) {
       console.log('Error al obtener facultades:', error);
     }
@@ -81,7 +79,7 @@ const Academico_desplegable = () => {
         facultades: response.data,
         tiene_facultades: true
       })
-      console.log("entra aqui ssisisisiisj")
+
     }
     catch (error){
       console.log("no capto el dato")
@@ -97,7 +95,6 @@ const Academico_desplegable = () => {
         facultades: response.data,
         tiene_facultades: true
       });
-      console.log('Facultades:', response.data);
     } catch (error) {
       console.log('Error al obtener facultades:', error);
     }
@@ -118,7 +115,10 @@ const Academico_desplegable = () => {
 
   const traer_estudiantes = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config);
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config,{paramsget});
       set_state({
         estudiantes_a_consultar: [{ estudiantes: response.data }],
         tiene_estudiantes: true

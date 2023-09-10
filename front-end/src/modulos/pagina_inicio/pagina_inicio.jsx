@@ -9,30 +9,25 @@
 
 import React, { useState, useEffect } from "react";
 import { Container, Row, Button, Col } from "react-bootstrap";
+import Select from 'react-select'  
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
-import Select from "react-select";
-import incioima  from "../../images/inicio.jpg";
-import boton1 from '../../images/17.png';
-import boton2 from '../../images/18.png';
-import boton3 from '../../images/19.png';
-import boton4 from '../../images/20.png';
-import boton6 from '../../images/2.png';
-import boton7 from '../../images/3.png';
-import boton8 from '../../images/4.png';
-import boton9 from '../../images/5.png';
-import boton10 from '../../images/6.png';
-import boton11 from '../../images/7.png';
-import boton12 from '../../images/8.png';
-import boton13 from '../../images/9.png';
-import boton14 from '../../images/10.png';
-import boton15 from '../../images/11.png';
-import boton16 from '../../images/12.png';
-import boton17 from '../../images/13.png';
-import boton18 from '../../images/14.png';
-import boton19 from '../../images/15.png';
-import boton20 from '../../images/16.png';
-import boton21 from '../../images/21.png';
+
+import boton1 from '../../images/BOTONES_SVG 18.svg';
+import boton2 from '../../images/BOTONES_SVG 19.svg';
+
+import boton4 from '../../images/BOTONES_SVG 21.svg';
+import boton6 from '../../images/BOTONES_SVG 3.svg';
+
+import boton8 from '../../images/BOTONES_SVG 5.svg';
+import boton9 from '../../images/BOTONES_SVG 6.svg';
+
+import boton15 from '../../images/BOTONES_SVG 12.svg';
+
+import boton17 from '../../images/BOTONES_SVG 14.svg';
+
+import boton20 from '../../images/BOTONES_SVG 17.svg';
+import boton21 from '../../images/BOTONES_SVG 1.svg';
 
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
@@ -120,16 +115,10 @@ const Pagina_inicio = () => {
 
   //Cambia las sedes para visualizarse
   const handle_storage = () => {
-    localStorage.setItem("sede", temp.value);
-    // console.log(nombre_sede);
-    localStorage.setItem("sede_id", temp.id);
-    // console.log(temp.value + " fue Seleccionada");
-    console.log(
-      "la sede seleccionada es: " +
-        localStorage.getItem("sede") +
-        " con ID: " +
-        localStorage.getItem("sede_id")
-    );
+    sessionStorage.setItem("sede", temp.value);
+    sessionStorage.setItem("sede_id", temp.id);
+    window.location.reload();
+
     // });
   };
         /*<div
@@ -186,10 +175,49 @@ const Pagina_inicio = () => {
   return (
         <Row className="fondo_inicio">
             <Col xs={"12"} md={"6"} className="col_background">
+              <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Importante</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  ¿Está seguro qué desea seleccionar otra sede?
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
+                    onClick={handle_storage}
+                    onClickCapture={handleClose}
+                    autoFocus
+                  >
+                    Cambiar de Sede
+                  </Button>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              <Row className="rowJustFlex">
+                <h4>Para cambiar de sede:</h4>
+              </Row>)}
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              <Row className="rowJustFlex">
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+                <Select
+                  name="def"
+                  class="option"
+                  options={opciones}
+                  onMenuOpen={handle_sedes}
+                  onChange={handleShow}
+                  className="option"
+                  placeholder="Selecione una sede"
+                />)}
+              </Row>)}
             <p className="estilo_bienvenido"> ¡Bienvenido!</p>  
               <p className="estilo_sesion">INICIASTE SESIÓN </p>
             <p className="estilo_como">COMO {desplegable}</p>
             </Col>
+
             <Col style={{ background:"white"}} xs={"12"} md={"6"}>
               <Row> 
                 <Col xs={"12"} md={"5"} className="botones-container">

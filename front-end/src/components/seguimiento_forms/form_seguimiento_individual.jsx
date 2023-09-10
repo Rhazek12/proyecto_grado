@@ -1,10 +1,22 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
+import { CSVLink } from 'react-csv';
+
 
 
 const Seguimiento_individual = (props) =>{
+
+    const recargarPagina = () => {
+        
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+
+    };
+
+
+
 
     const [state, set_state] = useState({
             fecha: null,
@@ -67,17 +79,24 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
+            id_estudiante: props.estudiante_seleccionado,
             id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
-            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
     )
+    useEffect(()=>{
+        set_state({
+            ...state,
+            id_estudiante : props.estudiante_seleccionado
+
+        })
+    }, [state.fecha]);
 
     const set_info = () => {
-        console.log(state);
         Create_Seguimiento.create_seguimiento(state).then(res=>{
             if(res){
-                props.handleClose()
+                recargarPagina();
+                props.handleClose();
             } else {
                 window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
@@ -827,11 +846,18 @@ const Seguimiento_individual = (props) =>{
                 <hr></hr>
             </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={set_info}>
-              Registrar
-            </Button>
-            <Button variant="secondary" onClick={()=>props.handleClose()}>
-              Cerrar
+
+            <CSVLink
+                    data={[state]}
+                    filename={"Seguimiento Individual " + state.fecha}
+                >
+                <Button variant="secondary" onClick={() => { set_info() }}>
+                    Registrar
+                </Button>
+            </CSVLink>
+
+            <Button variant="secondary" onClick={() => { props.handleClose() }}>
+                Cerrar
             </Button>
           </Modal.Footer>
         </Modal>

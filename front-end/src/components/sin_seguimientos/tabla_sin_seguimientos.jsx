@@ -15,27 +15,30 @@ const Tabla_sin_Seguimientos = (props) =>{
   };
 
   const [state,set_state] = useState({
-    id_semestre : 6,
+    id_semestre : sessionStorage.getItem('id_semestre_actual'),
     la_info_de_la_tabla : [],
   })
 
   useEffect(()=>{
-    
-        axios({
-          // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/info_estudiantes_sin_seguimientos/`+state.id_semestre+"/",
-          method: "GET",
-          headers: config,
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
+      axios({
+        // Endpoint to send files
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/info_estudiantes_sin_seguimientos/`+state.id_semestre+"/",
+        params : paramsget,
+        method: "GET",
+        headers: config,
+      })
+      .then((respuesta)=>{
+        set_state({
+          la_info_de_la_tabla : respuesta.data
         })
-        .then((respuesta)=>{
-          set_state({
-            la_info_de_la_tabla : respuesta.data
-          })
-            setRecords(respuesta.data)
-          })
-        .catch(err=>{
-            console.log("no llega :"+err)
+          setRecords(respuesta.data)
         })
+      .catch(err=>{
+          console.log("no llega :"+err)
+      })
     
   },[state.id_semestre]);
 

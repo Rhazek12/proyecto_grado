@@ -100,7 +100,7 @@ const isTabSelected_monitor = (username) => {
 
     if(state.data_profesionales.length > state.opciones_profesionales.length)
     {
-      console.log("entra una vez")
+
       for (var i = 0; i < state.data_profesionales.length ; i++) {
           const dato = 
           { value: state.data_profesionales[i]['id'], 
@@ -109,14 +109,9 @@ const isTabSelected_monitor = (username) => {
           id:state.data_profesionales[i]['id'] }
 
           state.opciones_profesionales.push(dato)
-          console.log("entra 1")
-          console.log(state.opciones_profesionales[i])
+
         }
-        console.log("entra2")
-        console.log(state.opciones_profesionales)
-    }
-    {
-      console.log("entra dos veces")
+
     }
 
         
@@ -180,7 +175,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       [e.target.name] : e.target.value
     })
-    console.log(e.target.value)
     }
 
 
@@ -207,7 +201,6 @@ const isTabSelected_monitor = (username) => {
       practicante_seleccionado : name
     })
 
-    console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
 
 
@@ -233,7 +226,6 @@ const isTabSelected_monitor = (username) => {
       monitor_seleccionado : name
     })
 
-    console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }
 
 
@@ -483,24 +475,25 @@ const isTabSelected_monitor = (username) => {
                       <Row className="asignaciones_no_seleccion">
                         Monitor no seleccionado 
                       </Row>
-                    <Scrollbars>
-                      { state.data_estudiantes.filter((item)=>{
-                        return state.estudiante_filtro.toLowerCase() === '' ? item 
-                        : 
-                        item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
-                        item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
-                        item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                      }).map((item, index) => 
-                    <Col className='asignaciones_hover_no_seleccionado'>
+                      
+                        <Scrollbars>
+                          { state.data_estudiantes.filter((item)=>{
+                            return state.estudiante_filtro.toLowerCase() === '' ? item 
+                            : 
+                            item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
+                            item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                            item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                          }).map((item, index) => 
+                        <Col className='asignaciones_hover_no_seleccionado'>
 
-                      <Listas 
-                      key={index} item={item} rol={rol3} 
-                      monitor_seleccionado={state.monitor_seleccionado}
-                      filtro={state.estudiante_filtro}
-                      />
+                          <Listas 
+                          key={index} item={item} rol={rol3} 
+                          monitor_seleccionado={state.monitor_seleccionado}
+                          filtro={state.estudiante_filtro}
+                          />
 
-                    </Col>) }
-                    </Scrollbars>
+                        </Col>) }
+                        </Scrollbars>
                     </Col>
                   )
                   :
