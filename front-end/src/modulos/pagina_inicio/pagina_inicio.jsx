@@ -42,7 +42,7 @@ const Pagina_inicio = () => {
   } else if (sessionStorage.rol === 'dir_academico') {
     desplegable = 'DIRECTOR ACÁDEMICO';
   } else if (sessionStorage.rol === 'monitor') {
-    desplegable = 'MONITOR';
+    desplegable = 'MONITOR'; 
   } else if (sessionStorage.rol === 'practicante') {
     desplegable = 'PRACTICANTE';
   } else if (sessionStorage.rol === 'dir_investigacion') {
@@ -53,7 +53,9 @@ const Pagina_inicio = () => {
     desplegable = 'VICERRECTOR ACADE.';
   } else if (sessionStorage.rol === 'profesional') {
     desplegable = 'PROFESIONAL';
-  } 
+  } else if (sessionStorage.rol === 'profesor') {
+    desplegable = 'PROFESOR';
+  }
   
   //Constante y variable que se usaran para el select
   const opciones = [];
@@ -208,6 +210,8 @@ const Pagina_inicio = () => {
                 <Link to={`/academico`}> 
                   <img src={boton20} className="boton" alt='/'></img>
                 </Link>)}
+                {(userRole === 'profesor' )&& (
+                <meta http-equiv="Refresh" content="0; url='/academico'" />)}
                 </Col>
 
                 <Col className="vertical-line-col"><div className="vertical"></div></Col>
