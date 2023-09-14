@@ -96,7 +96,7 @@ class user_actualizacion_viewsets(viewsets.ViewSet):
 
 class estudiante_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
-    permission_classes = (IsAuthenticated,)
+    #permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -206,33 +206,25 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante['id_act_simultanea'] = None
 
         lista_programas = []
-        try :
-            ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
-            for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
-                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).first()
-                var_programa = programa.objects.filter(id=programa_seleccionado.id_programa_id).values()
+        ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
+        for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
+            programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id'])
+            for progrma_a_anadir in programa_seleccionado:    
+                var_programa = programa.objects.filter(id=progrma_a_anadir.id_programa_id).values()
+                print(var_programa)             
                 dic_programa = {'nombre_programa': var_programa[0]['nombre'], 
                                 'cod_univalle': var_programa[0]['codigo_univalle'],
                                 'codigo_estudiante': id_estudiante_programa['cod_univalle'],
-                                'id_estado_id': programa_seleccionado.id_estado_id,
-                                'traker': programa_seleccionado.traker
+                                'id_estado_id': progrma_a_anadir.id_estado_id,
+                                'traker': progrma_a_anadir.traker
                                 }  # Agregar el estado del curso al diccionario
+                print(dic_programa)             
 
-                dic = id_estudiante_programa
-                dic.update(dic_programa)
-                lista_programas.append(dic)
-            diccionario_programas = {'programas': lista_programas}
-            diccionario_estudiante.update(diccionario_programas)
+                lista_programas.append(dic_programa)
+        diccionario_programas = {'programas': lista_programas}
+        diccionario_estudiante.update(diccionario_programas)
 
-        except :
-            dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
-                            }  # Agregar el estado del curso al diccionario
 
-            dic = id_estudiante_programa
-            dic.update(dic_programa)
-            lista_programas.append(dic)
-            diccionario_programas = {'programas': lista_programas}
-            diccionario_estudiante.update(diccionario_programas)
 
         try:
             semestre_activo = semestre.objects.get(semestre_actual=True, id_sede =request_sede)
