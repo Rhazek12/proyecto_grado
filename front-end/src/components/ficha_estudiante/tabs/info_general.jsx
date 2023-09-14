@@ -370,11 +370,11 @@ const agregarPariente = () => {
 
     let formData = new FormData();
       formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
-      formData.append('telefono_res', state.nuevo_telefono_res !== null ? state.nuevo_telefono_res : [null])
-      formData.append('celular', state.nuevo_celular !== null ? state.nuevo_celular : [null])
-      formData.append('email', state.nuevo_email_alternativo !== null ? state.nuevo_email_alternativo : [null])
-      formData.append('sexo', state.nuevo_sexo !== null ? state.nuevo_sexo : [null])
-      formData.append('hijos', state.nuevo_cantidad_hijo !== null ? state.nuevo_cantidad_hijo : [null])
+      formData.append('telefono_res', (state.nuevo_telefono_res !== null && state.nuevo_telefono_res.lenght > 0) ? state.nuevo_telefono_res : '0')
+      formData.append('celular', (state.nuevo_celular !== null && state.nuevo_celular.lenght > 0) ? state.nuevo_celular : '0')
+      formData.append('email', (state.nuevo_email_alternativo !== null && state.nuevo_email_alternativo.lenght > 0) ? state.nuevo_email_alternativo : 'sin especifiar')
+      formData.append('sexo', (state.nuevo_sexo !== null && state.nuevo_sexo.lenght > 0) ? state.nuevo_sexo : 'sin especifiar')
+      formData.append('hijos', (state.nuevo_cantidad_hijo !== null  && state.nuevo_cantidad_hijo.lenght > 0) ? state.nuevo_cantidad_hijo : '0')
       formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica !== null ? state.nuevo_deportes_que_practica : [null])
       formData.append('acudiente', state.nuevo_acudiente_emergencia !== null ? state.nuevo_acudiente_emergencia : [null])
       formData.append('telefono_acudiente', state.nuevo_tel_acudiente_emergencia !== null ? [state.nuevo_tel_acudiente_emergencia] : [null])
