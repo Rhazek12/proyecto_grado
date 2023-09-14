@@ -31,7 +31,7 @@ const Inasistencia = (props) => {
             ...prevState,
             id_estudiante: id_estudiantecons,
         }))
-    },[state])
+    },[state.fecha])
 
 
 
@@ -70,7 +70,7 @@ const Inasistencia = (props) => {
     const userRole = sessionStorage.getItem('rol');
 
     return (
-        <Modal {...props}>
+        <Modal {...props} backdrop="static">
             <Modal.Header closeButton>
                 <Modal.Title>Inasistencia</Modal.Title>
                 <Button onClick={handleChange}>Registrar Seguimiento</Button>
