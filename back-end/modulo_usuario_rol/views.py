@@ -396,6 +396,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
             deporte_request = serializer.data['actividades_ocio_deporte']
             acudiente_emergencia_request = serializer.data['acudiente']
             tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
+            observaciones_request = serializer.data['observacion']
 
             etnia_request = serializer.data['id_etnia']
             act_simultanea_request = serializer.data['id_act_simultanea']
@@ -422,6 +423,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_estudiante.hijos = cantidad_hijo_request
                 var_estudiante.acudiente = acudiente_emergencia_request
                 var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
+                var_estudiante.observacion = observaciones_request
                 var_estudiante.vive_con = vive_con_request
                 var_estudiante.ult_modificacion = ult_modificacion_request
 

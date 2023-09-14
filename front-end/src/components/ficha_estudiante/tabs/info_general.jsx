@@ -235,6 +235,7 @@ const Info_general = (props) =>{
       nuevo_deportes_que_practica:props.datos['actividades_ocio_deporte'],
       nuevo_condicion_de_excepcion_id:props.datos['id_cond_excepcion'],
       nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
+      nuevo_observaciones:props.datos['observacion'],
     });
 
 
@@ -359,6 +360,9 @@ const agregarPariente = () => {
 
 
     // llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ 
+    // llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ 
+    // llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ 
+    // llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ 
 
 
   const handle_upload_estudiante = (e) => {
@@ -366,14 +370,15 @@ const agregarPariente = () => {
 
     let formData = new FormData();
       formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
-      formData.append('telefono_res', state.nuevo_telefono_res)
-      formData.append('celular', state.nuevo_celular)
-      formData.append('email', state.nuevo_email_alternativo)
-      formData.append('sexo', state.nuevo_sexo)      
-      formData.append('hijos', state.nuevo_cantidad_hijo)
-      formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica)
-      formData.append('acudiente', state.nuevo_acudiente_emergencia)
+      formData.append('telefono_res', state.nuevo_telefono_res !== null ? state.nuevo_telefono_res : [null])
+      formData.append('celular', state.nuevo_celular !== null ? state.nuevo_celular : [null])
+      formData.append('email', state.nuevo_email_alternativo !== null ? state.nuevo_email_alternativo : [null])
+      formData.append('sexo', state.nuevo_sexo !== null ? state.nuevo_sexo : [null])
+      formData.append('hijos', state.nuevo_cantidad_hijo !== null ? state.nuevo_cantidad_hijo : [null])
+      formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica !== null ? state.nuevo_deportes_que_practica : [null])
+      formData.append('acudiente', state.nuevo_acudiente_emergencia !== null ? state.nuevo_acudiente_emergencia : [null])
       formData.append('telefono_acudiente', state.nuevo_tel_acudiente_emergencia !== null ? [state.nuevo_tel_acudiente_emergencia] : [null])
+      formData.append('observacion', state.nuevo_observaciones !== null ? [state.nuevo_observaciones] : [null])
 
       formData.append('id_etnia', state.nuevo_grupo_etnico !== null ? state.nuevo_grupo_etnico : [null]);
       formData.append('id_act_simultanea', state.nuevo_actividad_simultanea !== null ? state.nuevo_actividad_simultanea : [null]);
@@ -381,7 +386,7 @@ const agregarPariente = () => {
       formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
       formData.append('id_cond_excepcion', state.nuevo_condicion_de_excepcion !== null ? state.nuevo_condicion_de_excepcion : [null]);
       
-      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive));
+      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive) !== null ? state.nuevo_personas_con_quien_vive : [null]);
       formData.append("ult_modificacion", fechaHoraActual);
 
 
@@ -1150,7 +1155,7 @@ const agregarPariente = () => {
                 (
                   <Row>
                     <h1 className="texto_subtitulo">Observaciones</h1>
-                    <h4 className="texto_pequeño_12pt">texto</h4>
+                    <h4 className="texto_pequeño_12pt">{state.observaciones}</h4>
                 </Row>
                 )
                 }

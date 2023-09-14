@@ -103,7 +103,7 @@ class Estudiante_actualizacion(serializers.ModelSerializer):
 		model = estudiante
 		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
                   'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
-                  'id_cond_excepcion','vive_con', 'ult_modificacion']
+                  'id_cond_excepcion','vive_con', 'ult_modificacion', 'observacion']
 
 class Monitor_actualizacion(serializers.ModelSerializer):
 	class Meta:
