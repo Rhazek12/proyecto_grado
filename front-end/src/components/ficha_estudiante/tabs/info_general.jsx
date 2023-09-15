@@ -239,7 +239,7 @@ const Info_general = (props) =>{
     });
 
 
-
+/*
 const agregarPariente = () => {
   if (!Array.isArray(state.nuevo_personas_con_quien_vive)) {
     set_state({
@@ -261,7 +261,27 @@ const agregarPariente = () => {
     });
   }
 };
+*/
+const agregarPariente = () => {
+  const nuevoPersonasConQuienVive = {
+    personas: [
+      ...(state.nuevo_personas_con_quien_vive && state.nuevo_personas_con_quien_vive.personas
+        ? state.nuevo_personas_con_quien_vive.personas
+        : [])
+    ],
+  };
 
+  nuevoPersonasConQuienVive.personas.push({
+    pariente: "",
+    nombre: "",
+  });
+
+  set_state({
+    ...state,
+    nuevo_personas_con_quien_vive: nuevoPersonasConQuienVive,
+    agregarPariente: true,
+  });
+};
 
     
     const guardarPariente = () => {
@@ -293,6 +313,8 @@ const agregarPariente = () => {
       //             [e.target.name] : e.target.value
       //       })
       // }
+
+  /*
       const cambiar_datos = (e) => {
       if (e.target.name.startsWith("nuevo_personas_con_quien_vive")) {
       // Si el campo está relacionado con personas con quien vive, actualiza el estado
@@ -317,7 +339,45 @@ const agregarPariente = () => {
       });
       }
       };
+*/
+const cambiar_datos = (e) => {
+  if (e.target.name.startsWith("nuevo_personas_con_quien_vive")) {
+    const [indexStr, field] = e.target.name.match(/\[(\d+)\]\.(.*)/).slice(1);
+    const index = parseInt(indexStr);
 
+    set_state((prevState) => {
+      const nuevoPersonasConQuienVive = {
+        personas: [
+          ...(prevState.nuevo_personas_con_quien_vive && prevState.nuevo_personas_con_quien_vive.personas
+            ? prevState.nuevo_personas_con_quien_vive.personas
+            : [])
+        ],
+      };
+
+      if (!nuevoPersonasConQuienVive.personas[index]) {
+        nuevoPersonasConQuienVive.personas[index] = {
+          pariente: "",
+          nombre: "",
+        };
+      }
+
+      nuevoPersonasConQuienVive.personas[index] = {
+        ...nuevoPersonasConQuienVive.personas[index],
+        [field]: e.target.value,
+      };
+
+      return {
+        ...prevState,
+        nuevo_personas_con_quien_vive: nuevoPersonasConQuienVive,
+      };
+    });
+  } else {
+    set_state({
+      ...state,
+      [e.target.name]: e.target.value,
+    });
+  }
+};
 
       const cambiar_datos_select_etnia = (e) => {
             set_state({
@@ -370,11 +430,13 @@ const agregarPariente = () => {
 
     let formData = new FormData();
       formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
-      formData.append('telefono_res', (state.nuevo_telefono_res !== null && state.nuevo_telefono_res.lenght > 0) ? state.nuevo_telefono_res : '0')
-      formData.append('celular', (state.nuevo_celular !== null && state.nuevo_celular.lenght > 0) ? state.nuevo_celular : '0')
-      formData.append('email', (state.nuevo_email_alternativo !== null && state.nuevo_email_alternativo.lenght > 0) ? state.nuevo_email_alternativo : 'sin especifiar')
-      formData.append('sexo', (state.nuevo_sexo !== null && state.nuevo_sexo.lenght > 0) ? state.nuevo_sexo : 'sin especifiar')
-      formData.append('hijos', (state.nuevo_cantidad_hijo !== null  && state.nuevo_cantidad_hijo.lenght > 0) ? state.nuevo_cantidad_hijo : '0')
+
+      formData.append('telefono_res', (state.nuevo_telefono_res !== null && state.nuevo_telefono_res !== undefined && state.nuevo_telefono_res.length > 0) ? state.nuevo_telefono_res : '0');
+      formData.append('celular', (state.nuevo_celular !== null && state.nuevo_celular !== undefined && state.nuevo_celular.length > 0) ? state.nuevo_celular : '0');
+      formData.append('email', (state.nuevo_email_alternativo !== null && state.nuevo_email_alternativo !== undefined && state.nuevo_email_alternativo.length > 0) ? state.nuevo_email_alternativo : 'sin especificar');
+      formData.append('sexo', (state.nuevo_sexo !== null && state.nuevo_sexo !== undefined && state.nuevo_sexo.length > 0) ? state.nuevo_sexo : 'sin especificar');
+      formData.append('hijos', (state.nuevo_cantidad_hijo !== null && state.nuevo_cantidad_hijo !== undefined && state.nuevo_cantidad_hijo.length > 0) ? state.nuevo_cantidad_hijo : '0');
+      
       formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica !== null ? state.nuevo_deportes_que_practica : [null])
       formData.append('acudiente', state.nuevo_acudiente_emergencia !== null ? state.nuevo_acudiente_emergencia : [null])
       formData.append('telefono_acudiente', state.nuevo_tel_acudiente_emergencia !== null ? [state.nuevo_tel_acudiente_emergencia] : [null])
@@ -386,9 +448,8 @@ const agregarPariente = () => {
       formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
       formData.append('id_cond_excepcion', state.nuevo_condicion_de_excepcion !== null ? state.nuevo_condicion_de_excepcion : [null]);
       
-      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive) !== null ? state.nuevo_personas_con_quien_vive : [null]);
+      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive) !== null ? JSON.stringify(state.nuevo_personas_con_quien_vive) : [null]);
       formData.append("ult_modificacion", fechaHoraActual);
-
 
       axios({
       url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
@@ -945,10 +1006,10 @@ const agregarPariente = () => {
     {state.editar || state.agregarPariente ? (
       <Row>
       {
-        state.personas_con_quien_vive.length > 0 ?
+        state.personas_con_quien_vive.personas && state.personas_con_quien_vive.personas.length > 0 ?
         (
           <Row>
-              {state.nuevo_personas_con_quien_vive.map((item, index) => (
+              {state.nuevo_personas_con_quien_vive.personas.map((item, index) => (
                 <Row className="row_flex_general">
                   <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
                     <input
@@ -1022,10 +1083,10 @@ const agregarPariente = () => {
 
 
       {
-        state.personas_con_quien_vive.length > 0 ?
+        state.personas_con_quien_vive.personas && state.personas_con_quien_vive.personas.length > 0 ?
         (
           <Row>
-              {state.personas_con_quien_vive.map((item, index) => (
+              {state.personas_con_quien_vive.personas.map((item, index) => (
                 <Row>
                   <Col xs={"12"} md={"6"} className="texto_pequeño">
                     {item.nombre}
@@ -1068,7 +1129,7 @@ const agregarPariente = () => {
     </Col>
   {state.agregarPariente ? (
       <Row>
-        {state.nuevo_personas_con_quien_vive.map((item, index) => (
+        {state.nuevo_personas_con_quien_vive.personas.map((item, index) => (
           <Row className="row_flex_general">
             <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
               <input

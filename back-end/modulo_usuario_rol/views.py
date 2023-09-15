@@ -373,8 +373,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     queryset = estudiante_serializer.Meta.model.objects.all()
 
     def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
+
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -454,7 +453,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
             except estudiante.DoesNotExist:
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-
+        print('no hizo seralizer')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
