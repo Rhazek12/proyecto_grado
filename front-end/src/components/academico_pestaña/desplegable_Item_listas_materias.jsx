@@ -122,7 +122,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" >
                         <a href={`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
-                        target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+                        rel="noopener noreferrer" className="link_text_academico_hover4">
                             Grupo {item.franja}     :     {item.profesor_data.first_name}   {item.profesor_data.last_name} 
                         </a>
                     </Row>
@@ -150,7 +150,8 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             <Row className="link_academico1_sin_borde" >
                 <Col className="contenido_fichas_academico2" >
                         <a href={`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
-                        target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+
+                        rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.first_name} {item.last_name}  
                         </a>
                 </Col>
@@ -205,6 +206,5 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
 }
 
 export default Desplegable_item_listas_materias
-
 
 

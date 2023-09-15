@@ -86,7 +86,7 @@ const Estudiantes = ({item}) => {
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
                         <a href={`/calificador/${encodeURIComponent(item.id_curso)}/${encodeURIComponent(item.curso_data.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
-                            target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+                            rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.curso_data.cod_materia}--{item.curso_data.franja} : {item.curso_data.nombre} 
                         </a>
                     </Row>
@@ -136,6 +136,5 @@ const Estudiantes = ({item}) => {
 }
 
 export default Estudiantes
-
 
 
