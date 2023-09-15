@@ -6,14 +6,15 @@
     opacity: 80%;
 }
 
-.fondo_inicio{
+.selector_reg{
+  color: rgb(0, 0, 0);
 }
 
 .estilo_bienvenido {
     font-weight: bold;
     font-size: 6rem; /* 2 veces el tamaño de fuente base (32px en este caso) */
     color: white;
-    margin-top: 25%;
+    margin-top: 15%;
   }
   
   /* Media query para pantallas más pequeñas */
