@@ -438,8 +438,10 @@ const cambiar_datos = (e) => {
       formData.append('hijos', (state.nuevo_cantidad_hijo !== null && state.nuevo_cantidad_hijo !== undefined && state.nuevo_cantidad_hijo.length > 0) ? state.nuevo_cantidad_hijo : '0');
       
       formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica !== null ? state.nuevo_deportes_que_practica : [null])
-      formData.append('acudiente', state.nuevo_acudiente_emergencia !== null ? state.nuevo_acudiente_emergencia : [null])
+      formData.append('acudiente', (state.nuevo_acudiente_emergencia !== null && state.nuevo_acudiente_emergencia !== undefined && state.nuevo_acudiente_emergencia.length > 0) ? state.nuevo_acudiente_emergencia : 'sin especificar');
       formData.append('telefono_acudiente', state.nuevo_tel_acudiente_emergencia !== null ? [state.nuevo_tel_acudiente_emergencia] : [null])
+      formData.append('telefono_acudiente', (state.nuevo_tel_acudiente_emergencia !== null && state.nuevo_tel_acudiente_emergencia !== undefined && state.nuevo_tel_acudiente_emergencia.length > 0) ? state.nuevo_tel_acudiente_emergencia : '0');
+
       formData.append('observacion', state.nuevo_observaciones !== null ? [state.nuevo_observaciones] : [null])
 
       formData.append('id_etnia', state.nuevo_grupo_etnico !== null ? state.nuevo_grupo_etnico : [null]);
@@ -1180,15 +1182,22 @@ const cambiar_datos = (e) => {
                         <Row className="row_flex_general">
                               <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">
                                     <input className="texto_pequeño_12pt"
-                                          name="nuevo_deportes_que_practica" 
+                                          name="nuevo_acudiente_emergencia" 
                                           onChange={cambiar_datos} 
-                                          defaultValue={state.deportes_que_practica}></input>
+                                          defaultValue={state.nuevo_acudiente_emergencia}></input>
                               </Col>
                               <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">
-                                    <input className="texto_pequeño_12pt"
-                                          name="nuevo_deportes_que_practica" 
-                                          onChange={cambiar_datos} 
-                                          defaultValue={state.deportes_que_practica}></input>
+                                    <input name="nuevo_tel_acudiente_emergencia" 
+                                          defaultValue={state.nuevo_tel_acudiente_emergencia}
+                                          onKeyPress={(e) => {
+                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                              if (!allowedCharacters.test(e.key)) {
+                                                  e.preventDefault();
+                                              }
+                                          }}
+                                          title="Solo números, paréntesis y guiones son permitidos"
+                                          onChange={cambiar_datos}>
+                                    </input>
                               </Col>  
                         </Row>
                         
