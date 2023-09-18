@@ -1196,8 +1196,8 @@ const cambiar_datos = (e) => {
                       :
                       (
                       <Row className="row_flex_general">
-                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{props.datos['acudiente']}</Col>
-                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{props.datos['telefono_acudiente']} </Col>
+                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{state.nuevo_acudiente_emergencia}</Col>
+                            <Col xs={"12"} md={"6"}className="texto_pequeño_12pt">{state.nuevo_tel_acudiente_emergencia} </Col>
                         </Row>
                       )
                       }
@@ -1209,14 +1209,14 @@ const cambiar_datos = (e) => {
                     <input className="texto_pequeño_12pt"
                                           name="nuevo_observaciones" 
                                           onChange={cambiar_datos} 
-                                          defaultValue={state.observaciones}></input>
+                                          defaultValue={state.nuevo_observaciones}></input>
                 </Row>
                 )
                 :
                 (
                   <Row>
                     <h1 className="texto_subtitulo">Observaciones</h1>
-                    <h4 className="texto_pequeño_12pt">{state.observaciones}</h4>
+                    <h4 className="texto_pequeño_12pt">{state.nuevo_observaciones}</h4>
                 </Row>
                 )
                 }
