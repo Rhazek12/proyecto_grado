@@ -17,14 +17,14 @@ const Inicio_semestre_sistemas_instancia = () =>{
     const userRole = sessionStorage.getItem('permisos');
 
     return (
-    <>{ userRole.includes('view_inicio_semestre') ? <Col className="contenido_children">
+    <Col className="contenido_children">
         <Row className="rowJustFlex">
             <h1>INICIO DE SEMESTRE</h1>
         </Row>
         <Row className="containerRow">
             <Inicio_semestre_component/>
         </Row>
-    </Col> : <Acceso_denegado/>}</>
+    </Col> 
     )
 }
 

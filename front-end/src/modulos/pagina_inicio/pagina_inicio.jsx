@@ -54,7 +54,9 @@ const Pagina_inicio = () => {
     desplegable = 'VICERRECTOR ACADE.';
   } else if (sessionStorage.rol === 'profesional') {
     desplegable = 'PROFESIONAL';
-  } 
+  } else if (sessionStorage.rol === 'CAMPUS DIVERSO'){
+    desplegable = 'campus diverso';
+  }
   
   //Constante y variable que se usaran para el select
   const opciones = [];
@@ -219,6 +221,7 @@ const Pagina_inicio = () => {
             </Col>
 
             <Col style={{ background:"white"}} xs={"12"} md={"6"}>
+              <Row>
               <Row> 
                 <Col xs={"12"} md={"5"} className="botones-container">
                 {(userRole === "super_ases" || userRole === "sistemas")&&(
@@ -249,8 +252,14 @@ const Pagina_inicio = () => {
                 <Link to={`/academico`}> 
                   <img src={boton20} className="boton" alt='/'></img>
                 </Link>)}
+                {(userRole === "CAMPUS DIVERSO")&&(
+                <Link to={`/campus_diverso/registro`}> 
+                  <img src={boton15} className="boton" alt='/'></img>
+                </Link>)}
                 </Col>
+               
 
+               
                 <Col className="vertical-line-col"><div className="vertical"></div></Col>
 
                 <Col xs={"12"} md={"5"} className="botones-container">
@@ -267,6 +276,7 @@ const Pagina_inicio = () => {
                   <img src={boton4} className="boton" alt='/'></img>
                 </Link>
               </Col>
+              </Row>
               </Row>
             </Col>
         </Row>

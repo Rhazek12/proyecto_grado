@@ -14,7 +14,7 @@ const Carga_masiva = () =>{
     const userRole = sessionStorage.getItem('permisos');
 
     return (
-        <>{ userRole.includes('view_carga_masiva') ? <Col className="contenido_children">
+         <Col className="contenido_children">
             <Row className="justify-content-md-center">
                 <h1>CARGA MASIVA</h1>
             </Row>
@@ -24,7 +24,7 @@ const Carga_masiva = () =>{
             <Row>
 
             </Row>
-        </Col> : <Acceso_denegado/>}</>
+        </Col> 
     )
 }
 

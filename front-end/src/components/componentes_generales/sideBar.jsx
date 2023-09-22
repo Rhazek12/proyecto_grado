@@ -12,6 +12,7 @@ import Menu5 from './menus/dir_investigacion.json';
 import Menu6 from './menus/ente_academico.json';
 import Menu7 from './menus/sin_rol.json';
 import Menu8 from './menus/practicante.json';
+import Menu9 from './menus/campus_diverso.json';
 import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -40,6 +41,7 @@ const SideBar = (props) =>{
         sessionStorage.rol === 'monitor' ? Menu4 :
         sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
         sessionStorage.rol === 'practicante' ? Menu8 : 
+        sessionStorage.rol === 'CAMPUS DIVERSO' ? Menu9 : 
         sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })
 

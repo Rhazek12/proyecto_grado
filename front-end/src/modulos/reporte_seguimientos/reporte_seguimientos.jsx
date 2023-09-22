@@ -94,11 +94,11 @@ const Reporte_seguimientos = (props) =>{
 
     return (
         
-        <>{userRole.includes('view_reporte_segui') ? <Col className="contenido_children">
+         <Col className="contenido_children">
             <Row className="containerRow">
                 <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>
-        </Col> : <Acceso_denegado/>}</>
+        </Col> 
     )
 }
 

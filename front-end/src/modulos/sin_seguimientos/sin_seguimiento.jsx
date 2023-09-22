@@ -39,12 +39,12 @@ const Sin_seguimientos = () =>{
 
     return (
         
-        <>{ userRole.includes('view_estudiantes_sin_segui') ? <Col className="contenido_children">
+         <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_sin_seguimientos semestre_activo={state.semestre_activo['id']}></Tabla_sin_seguimientos>
             </Row>
 
-        </Col> : <Acceso_denegado/>}</>
+        </Col>
     )
 }
 

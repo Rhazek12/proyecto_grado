@@ -41,7 +41,7 @@ const Inicio_semestre_sistemas = () =>{
     }
 
     return (
-    <>{ userRole.includes('view_inicio_semestre') ? <Container>
+ <Container>
         <Row className="rowJustFlex">
             <h1>INICIO DE SEMESTRE</h1>
         </Row>
@@ -84,7 +84,7 @@ const Inicio_semestre_sistemas = () =>{
                 </Accordion.Item>
             </Accordion>
         </Row>
-    </Container> : <Acceso_denegado/>}</>
+    </Container>
     )
 }
 
