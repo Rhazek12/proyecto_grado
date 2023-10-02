@@ -1,8 +1,11 @@
 import axios from 'axios';
+import verificar_token from './verificar_token.js'
+import close_session from './close_session.js';
 
 const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva`;
 
-const carga_masiva = (file,option) => {
+const carga_masiva = async (file,option) => {
+  if(await verificar_token.verificar_token()){
     let formData = new FormData();
     const config = {
       Authorization: 'Bearer ' + sessionStorage.getItem('token')
@@ -22,7 +25,11 @@ const carga_masiva = (file,option) => {
     })
     .then(res=>{console.log(res.data)})
     .catch(err=>console.log(err))
+  } else {
+    window.alert('Ocurrió un error, debes ingresar nuevamente');
+    close_session.close_session()
   }
+}
 
   export default {
     carga_masiva
