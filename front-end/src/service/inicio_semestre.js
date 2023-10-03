@@ -1,6 +1,7 @@
 import axios from 'axios';
 import verificar_token from './verificar_token.js';
 import close_session from './close_session.js';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const inicio_semestre = async (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
   if(await verificar_token.verificar_token()){
@@ -10,11 +11,11 @@ const inicio_semestre = async (instancia, nombre_nuevo, fecha_inicio_nuevo, fech
 
     // header para la autorizacion con token
     const config = {
-      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
     const config2 = {
       headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
       }
     };
 

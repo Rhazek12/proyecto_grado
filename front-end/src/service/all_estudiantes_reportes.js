@@ -1,6 +1,7 @@
 import axios from "axios";
-import verificar_token from './verificar_token.js'
+import verificar_token from './verificar_token.js';
 import close_session from './close_session.js';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const all_estudiantes_reportes = async (formData, id_usuario) => {
   if(await verificar_token.verificar_token()){
@@ -11,7 +12,7 @@ const all_estudiantes_reportes = async (formData, id_usuario) => {
       // console.log(id_usuario);
       const config = {
         //   headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
+        Authorization: "Bearer " + decryptTokenFromSessionStorage(),
         //   },
       };
       // const url_axios = 'http://localhost:8000/usuario_rol/estudiante_selected2/';
