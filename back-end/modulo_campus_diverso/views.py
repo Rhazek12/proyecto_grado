@@ -95,9 +95,8 @@ class diversidad_sexual_viewsets (viewsets.ModelViewSet):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
  
-    def retrieve(self, request, id_persona=None): 
-        persona = get_object_or_404(Persona, numero_documento=id_persona)
-        diversidad_sexual = get_object_or_404(DiversidadSexual, id_persona=persona)
+    def retrieve(self, request, id_persona=None):
+        diversidad_sexual = get_object_or_404(DiversidadSexual, id_persona__numero_documento=id_persona)
         diversidad_sexual_serializer = DiversidadSexualSerializer(diversidad_sexual)
         return Response(diversidad_sexual_serializer.data) 
  

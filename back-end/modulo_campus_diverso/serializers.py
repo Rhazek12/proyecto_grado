@@ -284,14 +284,14 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
         required=False,
     )
     
-    actividades_tiempo_libre = ActividadTiempoLibreSerializer(many=True)
-    fuentes_de_ingresos = FuenteIngresosSerializer(many=True)
-    convivencias_en_vivienda = ConvivenciaViviendaSerializer(many=True)
-    redes_de_apoyo = RedApoyoSerializer(many=True)
-    factores_de_riesgo = FactorRiesgoSerializer(many=True)
-    encuentro_dias_horas = EncuentroDiaHoraGetSerializer(many=True)
-    informacion_profesional = InformacionProfesionalSerializer(many=True)
-    acompañamiento_recibido = AcompañamientoRecibidoSerializer(many=True)
+    actividades_tiempo_libre = ActividadTiempoLibreSerializer(many=True, required=False,)
+    fuentes_de_ingresos = FuenteIngresosSerializer(many=True, required=False,)
+    convivencias_en_vivienda = ConvivenciaViviendaSerializer(many=True, required=False,)
+    redes_de_apoyo = RedApoyoSerializer(many=True, required=False,)
+    factores_de_riesgo = FactorRiesgoSerializer(many=True, required=False,)
+    encuentro_dias_horas = EncuentroDiaHoraGetSerializer(many=True, required=False,)
+    informacion_profesional = InformacionProfesionalSerializer(many=True, required=False,)
+    acompañamiento_recibido = AcompañamientoRecibidoSerializer(many=True, required=False,)
     
     class Meta:
         model = InformacionGeneral
@@ -486,10 +486,10 @@ class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
 
 class PersonaSerializer(serializers.ModelSerializer):
  
-    diversidad_sexual = DiversidadSexualSerializer(required=False)
-    informacion_academica = InformacionAcademicaSerializer(required=False)
-    informacion_general = InformacionGeneralSerializer(required=False)
-    documentos_autorizacion = DocumentosAutorizacionSerializer(required=False)
+    DiversidadSexual = DiversidadSexualSerializer(required=False)
+    InformacionAcademica = InformacionAcademicaSerializer(required=False)
+    InformacionGeneral = InformacionGeneralSerializer(required=False)
+    DocumentosAutorizacion = DocumentosAutorizacionSerializer(required=False)
     seguimientos = SeguimientoSerializer(many=True, required=False)
     
     ciudad_nacimiento = serializers.CharField(max_length=100, default="Ciudad no especificada", required=False)
